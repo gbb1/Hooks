@@ -5,6 +5,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable import/no-extraneous-dependencies */
+
+/*
 require('dotenv').config();
 const axios = require('axios');
 const express = require('express');
@@ -26,3 +28,4 @@ app.listen(8081), () => {
   // connect to db
   console.log('Listening at http://localhost:8081');
 };
+*/

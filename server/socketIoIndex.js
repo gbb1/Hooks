@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 const express = require('express');
 
 const app = express();
@@ -17,6 +18,9 @@ const io = require('socket.io')(server, {
   }, // security reasons, disable cors/allow any
 });
 
+const getBooks = require('./requests.js');
+
+// FUNCTION THAT WILL GENERATE A RANDOM 7 DIGIT STRING: LOBBY ID
 function generateId() {
   const pattern = 'xxxxxxx';
   return pattern.replace(/[xy]/g, (c) => {
@@ -26,11 +30,24 @@ function generateId() {
   });
 }
 
+// FUNCTION TO START AND UPDATE THE TIMER ON A 1 SECOND INTERVAL
+function startTimer(s, lobby, start) {
+  let timeLeft = start;
+  const interval = setInterval(() => {
+    timeLeft--;
+    s.to(lobby).emit('timer-update', timeLeft);
+    if (timeLeft === 0) {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
 const activeLobbies = new Set();
 let lobby = '';
 
 io.on('connection', (socket) => {
   console.log(`a new user connected: ${socket.id.substr(0, 2)} `);
+  io.to(socket.id).emit('connection-success', socket.id);
 
   socket.on('message', (message) => {
     console.log(message);
@@ -65,6 +82,20 @@ io.on('connection', (socket) => {
   socket.on('lobby-post', (data) => {
     console.log(data.lobby, data.post);
     io.to(data.lobby).emit('new-post', data.post);
+  });
+
+  socket.on('new-member', (data) => {
+    console.log(data.lobby, data.user);
+    io.to(data.lobby).emit('add-member', data.user);
+  });
+
+  socket.on('start-timer', (data) => {
+    console.log('timer request received');
+    startTimer(io, data.lobby, data.time);
+  });
+
+  socket.on('get-books', () => {
+    getBooks();
   });
 
   socket.on('disconnect', () => {

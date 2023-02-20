@@ -1,6 +1,9 @@
+
+/*
 const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({ port: 8088 });
+const io = require('socket.io')(wss);
 
 let test = 'MESSAGE';
 
@@ -20,3 +23,4 @@ wss.on('connection', (ws) => {
     console.log('Client has disconnected');
   });
 });
+*/
