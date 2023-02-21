@@ -1,4 +1,6 @@
 /* eslint-disable no-plusplus */
+
+// SET UP EXPRESS SERVER
 const express = require('express');
 
 const app = express();
@@ -10,15 +12,17 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
 
+// CREATE AN HTTP INSTANCE OF EXPRESS SERVER
 const server = require('http').createServer(app);
 
+// SET UP SOCKET IO SERVER USING HTTP INSTANCE
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
   }, // security reasons, disable cors/allow any
 });
 
-const getBooks = require('./requests.js');
+const requests = require('./requests.js');
 
 // FUNCTION THAT WILL GENERATE A RANDOM 7 DIGIT STRING: LOBBY ID
 function generateId() {
@@ -47,17 +51,8 @@ let lobby = '';
 
 io.on('connection', (socket) => {
   console.log(`a new user connected: ${socket.id.substr(0, 2)} `);
+  // EMIT SUCCESS SIGNAL TO END LOADING ON CLIENT-SIDE
   io.to(socket.id).emit('connection-success', socket.id);
-
-  socket.on('message', (message) => {
-    console.log(message);
-    // io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
-  });
-
-  socket.on('test', (content) => {
-    console.log(content);
-    io.emit('message', `${socket.id.substr(0, 2)}: ${content}`);
-  });
 
   socket.on('create', () => {
     console.log('creating a game');
@@ -79,11 +74,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('lobby-post', (data) => {
-    console.log(data.lobby, data.post);
-    io.to(data.lobby).emit('new-post', data.post);
-  });
-
   socket.on('new-member', (data) => {
     console.log(data.lobby, data.user);
     io.to(data.lobby).emit('add-member', data.user);
@@ -95,7 +85,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('get-books', () => {
-    getBooks();
+    requests.getBooks();
+  });
+
+  socket.on('gpt-request', (data) => {
+    requests.gptAnswer(data.title, data.author);
   });
 
   socket.on('disconnect', () => {
@@ -106,3 +100,18 @@ io.on('connection', (socket) => {
 server.listen(8089, () => console.log('listening on port:8089'));
 
 module.exports = io;
+
+// socket.on('message', (message) => {
+//   console.log(message);
+//   // io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
+// });
+
+// socket.on('test', (content) => {
+//   console.log(content);
+//   io.emit('message', `${socket.id.substr(0, 2)}: ${content}`);
+// });
+
+// socket.on('lobby-post', (data) => {
+//   console.log(data.lobby, data.post);
+//   io.to(data.lobby).emit('new-post', data.post);
+// });
