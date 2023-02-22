@@ -1,3 +1,6 @@
+/* eslint-disable no-mixed-operators */
+/* eslint-disable no-bitwise */
+/* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 
 // SET UP EXPRESS SERVER
@@ -46,11 +49,13 @@ function startTimer(s, lobby, start) {
   }, 1000);
 }
 
+// STORE ACTIVE LOBBIES IN A SET THAT WE CAN REFERENCE LATER
 const activeLobbies = new Set();
-let lobby = '';
 
+// PROVIDE INSTRUCTIONS FOR WHAT TO DO ON CONNECTION, AND WHAT EVENTS TO LISTEN FOR
 io.on('connection', (socket) => {
   console.log(`a new user connected: ${socket.id.substr(0, 2)} `);
+
   // EMIT SUCCESS SIGNAL TO END LOADING ON CLIENT-SIDE
   io.to(socket.id).emit('connection-success', socket.id);
 
@@ -58,7 +63,6 @@ io.on('connection', (socket) => {
     console.log('creating a game');
     const id = generateId();
     activeLobbies.add(id);
-    console.log('id: ', id);
     io.to(socket.id).emit('gameId', id);
   });
 
@@ -66,7 +70,6 @@ io.on('connection', (socket) => {
     console.log('lobby request received at,', id);
     if (activeLobbies.has(id)) {
       socket.join(id);
-      lobby = id;
       io.to(socket.id).emit('join-success', id);
       io.to(id).emit('new-join', `${socket.id} has joined`);
     } else {

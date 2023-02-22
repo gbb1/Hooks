@@ -25,15 +25,15 @@ function getBooks(count) {
 
 function gptAnswer(title, author) {
   console.log('starting request');
-  const prompt = `Write the first sentence of a book called ${title} by ${author}`;
+  const prompt = `The first sentence of the novel "${title}" is`;
 
   console.log(prompt);
 
   const params = {
     engine: 'davinci',
     prompt,
-    max_tokens: 75,
-    n: 1,
+    max_tokens: 100,
+    n: 5,
     stop: '\n',
   };
 
@@ -43,7 +43,7 @@ function gptAnswer(title, author) {
     )
       .then((response) => {
         const answer = response.data;
-        console.log(answer.choices[0].text.trim());
+        console.log('answer: ', answer.choices[0].text.split('"')[1]) //filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
       })
       .catch((err) => {
         console.log(err);
