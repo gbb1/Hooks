@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
-const { initializeApp, database } = require('firebase/app');
+const firebase = require('firebase');
+const { initializeApp } = require('firebase/app');
 const {
-  getDatabase, onValue, ref, set,
+  getDatabase, onValue, child, get, ref, set, database,
 } = require('firebase/database');
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,8 +21,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const fire = initializeApp(firebaseConfig);
-const db = getDatabase();
+const fire = firebase.initializeApp(firebaseConfig);
+const db = firebase.databse();
+console.log(db);
 // const reference = ref(db, 'users/' + 1);
 
 function writeUserData(userId, name, email) {
@@ -87,8 +89,22 @@ function joinLobby(lobbyId, user) {
   // reference.off();
 }
 
-addLobby('BSADFK', { username: 'test', id: 123423423, score: 0 });
-joinLobby('BSADFK', { username: 'test2', id: 2, score: 0 });
+function queryData() {
+  // const lobbyRef = database().ref('lobbies/');
+
+  get(child(ref(db), "lobbies/"))
+    .then((result) => {
+      console.log(result);
+    });
+
+  // lobbyRef.orderByKey().on('child_added', (data) => {
+  //   console.log(data.key);
+  // });
+}
+
+// addLobby('BSADFK', { username: 'test', id: 123423423, score: 0 });
+// queryData();
+// joinLobby('BSADFK', { username: 'test2', id: 2, score: 0 });
 
 module.exports = {
   db,

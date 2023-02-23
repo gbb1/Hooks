@@ -1,61 +1,71 @@
-/* eslint-disable import/extensions */
-/* eslint-disable new-cap */
-import React, {
-  useState, useEffect, useRef, createContext,
-} from 'react';
-import {
-  BrowserRouter as Router, Link, Route, Routes,
-} from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
-import { io } from 'socket.io-client';
+// /* eslint-disable import/prefer-default-export */
+// /* eslint-disable import/extensions */
+// /* eslint-disable new-cap */
+// import React, {
+//   useState, useEffect, useRef, createContext,
+// } from 'react';
+// import {
+//   BrowserRouter as Router, Link, Route, Routes,
+// } from 'react-router-dom';
+// import { createRoot } from 'react-dom/client';
+// import { io } from 'socket.io-client';
 
-import Lobby from './components/lobby.jsx';
-import Start from './components/start.jsx';
+// import Lobby from './components/lobby.jsx';
+// import Start from './components/start.jsx';
 
-// CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
-const socket = io('http://localhost:8089');
-export const SocketContext = createContext(socket);
+// // CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
+// const socket = io('http://localhost:8089');
+// export const SocketContext = createContext(socket);
 
-const app = createRoot(document.getElementById('app'));
+// const app = createRoot(document.getElementById('app'));
 
-function App() {
-  const [loading, isLoading] = useState(true);
+// function App() {
+//   const [loading, isLoading] = useState(true);
 
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('connected');
-      // socket.on('message', (data) => console.log(data));
-    });
+//   useEffect(() => {
+//     socket.on('connect', () => {
+//       console.log('connected');
+//       // socket.on('message', (data) => console.log(data));
+//     });
 
-    // STOP LOADING WITH SUCCESSFUL HANDSHAKE
-    socket.on('connection-success', (id) => {
-      console.log('Connected with id:', id);
-      socket.emit('gpt-request', { title: 'Chicken Little', author: 'Jennie Bennett' });
-      isLoading(false);
-    });
+//     // STOP LOADING WITH SUCCESSFUL HANDSHAKE
+//     socket.on('connection-success', (id) => {
+//       console.log('Connected with id:', id);
+//       // socket.emit('gpt-request', { title: 'Chicken Little', author: 'Jennie Bennett' });
+//       isLoading(false);
+//     });
 
-    return () => {
-      socket.off('connect');
-    };
-  }, []);
+//     return () => {
+//       socket.off('connect');
+//     };
+//   }, []);
 
-  if (loading) return <div>Loading...</div>;
+//   if (loading) return <div>Loading...</div>;
 
-  return (
-    <SocketContext.Provider value={socket}>
-      <div>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/lobby/:id" element={<Lobby />} />
-          </Routes>
-        </Router>
-      </div>
-    </SocketContext.Provider>
-  );
-}
+//   return (
+//     <SocketContext.Provider value={socket}>
+//       <div>
+//         <Router>
+//           <Routes>
+//             <Route path="/" element={<Start />} />
+//             <Route path="/lobby/:id" element={<Lobby />} />
+//           </Routes>
+//         </Router>
+//       </div>
+//     </SocketContext.Provider>
+//   );
+// }
 
-app.render(<App />);
+// app.render(<App />);
+
+//---------------------------------------------------------------
+//
+//
+//
+//
+//
+//
+//
 //  {/* <Router>
 //           <div>
 //             <nav>
