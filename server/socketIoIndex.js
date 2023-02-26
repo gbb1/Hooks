@@ -25,6 +25,9 @@ const io = require('socket.io')(server, {
   }, // security reasons, disable cors/allow any
 });
 
+const {
+  Books, connectDB, closeDB, getBook,
+} = require('./db2.js');
 const requests = require('./requests.js');
 
 // FUNCTION THAT WILL GENERATE A RANDOM 7 DIGIT STRING: LOBBY ID
@@ -33,7 +36,7 @@ function generateId() {
   return pattern.replace(/[xy]/g, (c) => {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
+    return v.toString(16).toUpperCase();
   });
 }
 
@@ -51,6 +54,44 @@ function startTimer(s, lobby, start) {
 
 // STORE ACTIVE LOBBIES IN A SET THAT WE CAN REFERENCE LATER
 const activeLobbies = new Set();
+const lobbyDetails = {};
+
+function updateHistory(lobby, data) {
+  if (lobbyDetails[lobby].history === undefined) {
+    lobbyDetails[lobby].history = new Set();
+    lobbyDetails[lobby].history.add(data.id);
+  } else {
+    lobbyDetails[lobby].history.add(data.id);
+  }
+}
+
+function getNewBook(lobby) {
+  let bookId = Math.floor(Math.random() * (7719)) + 1;
+
+  // while (lobbyDetails[lobby].history.has(bookId)) {
+  //   bookId = Math.floor(Math.random() * (7719)) + 1;
+  // }
+
+  getBook(bookId)
+    .then((result) => {
+      console.log(Number(result[0].id));
+      console.log(result[0]);
+      // lobbyDetails[lobby].history.add(Number(result[0].id));
+      io.to(lobby).emit('game-book', result[0]);
+      return result[0];
+    })
+    .then((book) => {
+      requests.getGptAnswer(book.title)
+        .then((answer) => {
+          console.log(answer);
+          io.to(lobby).emit('gpt-answer', answer);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      io.send(lobby).emit('book-error', err);
+    });
+}
 
 // PROVIDE INSTRUCTIONS FOR WHAT TO DO ON CONNECTION, AND WHAT EVENTS TO LISTEN FOR
 io.on('connection', (socket) => {
@@ -63,6 +104,13 @@ io.on('connection', (socket) => {
     console.log('creating a game');
     const id = generateId();
     activeLobbies.add(id);
+
+    const details = {
+      members: {},
+      history: new Set(),
+    };
+
+    lobbyDetails[id] = details;
     io.to(socket.id).emit('gameId', id);
   });
 
@@ -77,9 +125,32 @@ io.on('connection', (socket) => {
     }
   });
 
+  /* IN LOBBY */
   socket.on('new-member', (data) => {
     console.log(data.lobby, data.user);
-    io.to(data.lobby).emit('add-member', data.user);
+    const newUser = data.user;
+    const userObj = {
+      ready: false,
+      writer_points: 0,
+      laugh_points: 0,
+      writer_catch: 0,
+      gpt_catch: 0,
+    };
+
+    if (lobbyDetails[data.lobby] === undefined) {
+      lobbyDetails[data.lobby] = {};
+      lobbyDetails[data.lobby].members = {};
+      lobbyDetails[data.lobby].members[newUser] = userObj;
+    } else {
+      lobbyDetails[data.lobby].members[newUser] = userObj;
+    }
+    io.to(data.lobby).emit('add-member', Object.keys(lobbyDetails[data.lobby].members));
+  });
+
+  socket.on('ready-up', (data) => {
+    console.log('player ready');
+    lobbyDetails[data.lobby].members[socket.id].ready = true;
+    io.to(data.lobby).emit('player-ready', socket.id);
   });
 
   socket.on('start-timer', (data) => {
@@ -87,7 +158,8 @@ io.on('connection', (socket) => {
     startTimer(io, data.lobby, data.time);
   });
 
-  socket.on('get-books', () => {
+  /* IN GAME */
+  socket.on('get-book', () => {
     requests.getBooks();
   });
 
@@ -100,7 +172,16 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(8089, () => console.log('listening on port:8089'));
+server.listen(8089, () => {
+  console.log('listening on port:8089');
+  connectDB();
+  // getBook()
+  //   .then((result) => {
+  //     console.log(Number(result[0].id));
+  //     console.log(result[0]);
+  //   });
+  getNewBook(1);
+});
 
 module.exports = io;
 

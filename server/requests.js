@@ -51,7 +51,37 @@ function gptAnswer(title, author) {
   })();
 }
 
+function getGptAnswer(title, author) {
+  return new Promise((resolve, reject) => {
+    const prompt = `The first sentence of the novel "${title}" is`;
+
+    const params = {
+      engine: 'davinci',
+      prompt,
+      max_tokens: 100,
+      n: 5,
+      stop: '\n',
+    };
+
+    (async () => {
+      await openai.complete(
+        params,
+      )
+        .then((response) => {
+          const answer = response.data;
+          // console.log('answer: ', answer.choices[0].text.split('"')[1]);
+          resolve(answer.choices[0].text.split('"')[1]); //filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    })();
+  });
+}
+
 module.exports = {
   getBooks,
   gptAnswer,
+  getGptAnswer,
 };
