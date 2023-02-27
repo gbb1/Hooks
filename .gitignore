@@ -3,3 +3,4 @@ node_modules
 public/bundle.js
 public/*
 .eslintrc.json
+data/bookData2.csv
