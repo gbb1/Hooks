@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 const path = require('path');
@@ -43,7 +44,8 @@ function gptAnswer(title, author) {
     )
       .then((response) => {
         const answer = response.data;
-        console.log('answer: ', answer.choices[0].text.split('"')[1]) //filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
+        console.log('answer: ', answer.choices[0].text.split('"')[1]);
+        return answer.choices[0].text.split('"')[1]; // filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
       })
       .catch((err) => {
         console.log(err);
@@ -69,8 +71,14 @@ function getGptAnswer(title, author) {
       )
         .then((response) => {
           const answer = response.data;
-          // console.log('answer: ', answer.choices[0].text.split('"')[1]);
-          resolve(answer.choices[0].text.split('"')[1]); //filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
+          console.log('answer: ', answer.choices[0].text.split('"')[1]);
+          let sentence = answer.choices[0].text.split('"')[1];
+
+          const i = 0;
+          while (sentence === undefined) {
+            sentence = answer.choices[i].text.split('"')[1];
+          }
+          resolve(sentence);
         })
         .catch((err) => {
           console.log(err);

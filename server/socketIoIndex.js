@@ -9,11 +9,13 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser);
 
 // CREATE AN HTTP INSTANCE OF EXPRESS SERVER
 const server = require('http').createServer(app);
@@ -26,7 +28,8 @@ const io = require('socket.io')(server, {
 });
 
 const {
-  Books, connectDB, closeDB, getBook,
+  Books, connectDB, closeDB, getBook, addLobby, addMember,
+  checkLobby, Lobbies, Member, removeMember, setAnswer, setPrefs,
 } = require('./db2.js');
 const requests = require('./requests.js');
 
@@ -53,38 +56,101 @@ function startTimer(s, lobby, start) {
 }
 
 // STORE ACTIVE LOBBIES IN A SET THAT WE CAN REFERENCE LATER
-const activeLobbies = new Set();
-const lobbyDetails = {};
 
-function updateHistory(lobby, data) {
-  if (lobbyDetails[lobby].history === undefined) {
-    lobbyDetails[lobby].history = new Set();
-    lobbyDetails[lobby].history.add(data.id);
-  } else {
-    lobbyDetails[lobby].history.add(data.id);
+/*
+  round:
+    1: ?
+      socket_id:
+        answer: 'Example sentence answer'
+        wager: 'votes_writer' || 'laughs' || 'none'
+        writer: 3
+        laughs: 2
+        writer_vote: true || false
+        missed_points: 0
+
+  function typePoints(type, play) {
+    if (type === 'writer') {
+      return play['writer'] * 2;
+    } else {
+      return play['laughs'];
+    }
   }
-}
+
+  function calcPoints(id) {
+
+    let play = round[id];
+    let score = 0;
+
+    const missed = {
+      'writer': 'laughs'
+      'laughs' : 'writer'
+    }
+
+    if (wager !== 'none') {
+      score += play[wager] * 2
+      play.missed_points = typePoints(missed[wager], play);
+    } else {
+      score += 2 * play.votes_writer + play.laughs
+    }
+    if (play.writer_vote) {
+      score += 2;
+    }
+    return score; // add score to DB?
+  }
+
+  // response
+  function updateHistory(lobby, data) {
+    if (lobbyDetails[lobby].history === undefined) {
+      lobbyDetails[lobby].history = new Set();
+      lobbyDetails[lobby].history.add(data.id);
+    } else {
+      lobbyDetails[lobby].history.add(data.id);
+    }
+  }
+
+*/
+
+// function startNewRound(lobby) {
+//   getBook(lobby)
+//     .then((book) => {
+//       console.log('book:::', book);
+//       requests.getGptAnswer(book.title)
+//         .then((answer) => {
+//           console.log('asnwerr:', answer);
+//           Lobbies.findOneAndUpdate(
+//             { lobby_id: lobby },
+//             { gpt: answer },
+//             { new: true },
+//           )
+
+// }
 
 function getNewBook(lobby) {
-  let bookId = Math.floor(Math.random() * (7719)) + 1;
-
-  // while (lobbyDetails[lobby].history.has(bookId)) {
-  //   bookId = Math.floor(Math.random() * (7719)) + 1;
-  // }
-
-  getBook(bookId)
+  getBook(lobby)
     .then((result) => {
-      console.log(Number(result[0].id));
-      console.log(result[0]);
-      // lobbyDetails[lobby].history.add(Number(result[0].id));
-      io.to(lobby).emit('game-book', result[0]);
-      return result[0];
+      io.to(lobby).emit('game-book', result);
+      return result;
     })
     .then((book) => {
+      // console.log('book:::', book);
       requests.getGptAnswer(book.title)
         .then((answer) => {
-          console.log(answer);
-          io.to(lobby).emit('gpt-answer', answer);
+          // console.log('asnwerr:', answer);
+          return Lobbies.findOneAndUpdate(
+            { lobby_id: lobby },
+            { gpt: answer },
+            { new: true },
+          )
+            .then((res) => {
+              console.log('ASDASDASD', res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          // io.to(lobby).emit('gpt-answer', answer);
+        })
+        .then((response) => {
+          console.log('GPT ADD?', response);
         });
     })
     .catch((err) => {
@@ -94,73 +160,124 @@ function getNewBook(lobby) {
 }
 
 // PROVIDE INSTRUCTIONS FOR WHAT TO DO ON CONNECTION, AND WHAT EVENTS TO LISTEN FOR
+const nicknames = new Set();
+
 io.on('connection', (socket) => {
   console.log(`a new user connected: ${socket.id.substr(0, 2)} `);
 
   // EMIT SUCCESS SIGNAL TO END LOADING ON CLIENT-SIDE
   io.to(socket.id).emit('connection-success', socket.id);
+  // res.cookie('socketId', socket.id);
 
   socket.on('create', () => {
     console.log('creating a game');
-    const id = generateId();
-    activeLobbies.add(id);
-
-    const details = {
-      members: {},
-      history: new Set(),
-    };
-
-    lobbyDetails[id] = details;
-    io.to(socket.id).emit('gameId', id);
+    const id = generateId().toUpperCase();
+    addLobby(id)
+      .then(() => {
+        io.to(socket.id).emit('gameId', id);
+      })
+      .catch((err) => {
+        console.log(err);
+        io.to(socket.id).emit('create-error');
+      });
   });
 
-  socket.on('join-lobby', (id) => {
+  socket.on('join-lobby', ({ id, nickname }) => {
     console.log('lobby request received at,', id);
-    if (activeLobbies.has(id)) {
-      socket.join(id);
-      io.to(socket.id).emit('join-success', id);
-      io.to(id).emit('new-join', `${socket.id} has joined`);
-    } else {
-      io.to(socket.id).emit('fail', 'this lobby does not exist');
+    console.log(nickname);
+    if (nickname === '') {
+      nickname = socket.id.substring(0, 7).toUpperCase();
+      console.log('NICKNAME', nickname);
     }
+
+    checkLobby(id)
+      .then((result) => {
+        if (result.length === 0) {
+          io.to(socket.id).emit('fail', 'this lobby does not exist');
+        } else {
+          addMember(id, socket.id, nickname)
+            .then(() => {
+              socket.join(id);
+              io.to(socket.id).emit('join-success', id);
+              io.to(id).emit('new-join', `${socket.id} has joined`);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // if (activeLobbies.has(id)) {
+    //   socket.join(id);
+    //   io.to(socket.id).emit('join-success', id);
+    //   io.to(id).emit('new-join', `${socket.id} has joined`);
+    // } else {
+    //   io.to(socket.id).emit('fail', 'this lobby does not exist');
+    // }
   });
 
   /* IN LOBBY */
   socket.on('new-member', (data) => {
     console.log(data.lobby, data.user);
-    const newUser = data.user;
-    const userObj = {
-      ready: false,
-      writer_points: 0,
-      laugh_points: 0,
-      writer_catch: 0,
-      gpt_catch: 0,
-    };
 
-    if (lobbyDetails[data.lobby] === undefined) {
-      lobbyDetails[data.lobby] = {};
-      lobbyDetails[data.lobby].members = {};
-      lobbyDetails[data.lobby].members[newUser] = userObj;
-    } else {
-      lobbyDetails[data.lobby].members[newUser] = userObj;
-    }
-    io.to(data.lobby).emit('add-member', Object.keys(lobbyDetails[data.lobby].members));
+    Member.find({ lobby_id: data.lobby })
+      .then((result) => {
+        console.log(result);
+        io.to(data.lobby).emit('add-member', result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   socket.on('ready-up', (data) => {
     console.log('player ready');
-    lobbyDetails[data.lobby].members[socket.id].ready = true;
-    io.to(data.lobby).emit('player-ready', socket.id);
+    Member.findOneAndUpdate({ socket_id: socket.id }, { ready: true })
+      .then((user) => Member.find({ lobby_id: user.lobby_id }))
+      .then((members) => {
+        io.to(data.lobby).emit('player-ready', members);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
-  socket.on('start-timer', (data) => {
-    console.log('timer request received');
-    startTimer(io, data.lobby, data.time);
+  socket.on('set-times', (data) => {
+    console.log('SETTING TIME', data);
+    setPrefs(data.lobby, data)
+      .then((res) => {
+        console.log(res);
+      });
   });
 
   /* IN GAME */
-  socket.on('get-book', () => {
-    requests.getBooks();
+  socket.on('start-timer-round', (data) => {
+    console.log('timer request received');
+    Lobbies.find({ lobby_id: data })
+      .then((results) => {
+        const time = results[0].round_time;
+        startTimer(io, data, time);
+      });
+  });
+
+  socket.on('game-start', (lobby) => {
+    getNewBook(lobby);
+    // .then(() => Lobbies.find({ lobby_id: lobby }))
+    // .then((results) => {
+    //   console.log('resultssss', results);
+    //   io.to(lobby).emit('game-book', results[0]);
+    // })
+    // .catch((err) => console.log(err));
+  });
+
+  socket.on('player-answer', (data) => {
+    // console.log('PLAYER ANSWER', data);
+    setAnswer(data.socket, data)
+      .then(() => {
+        io.to(data.lobby).emit('player-answer-in');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   socket.on('gpt-request', (data) => {
@@ -169,6 +286,22 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    let lobby = null;
+    Member.find({ socket_id: socket.id })
+      .then((result) => {
+        if (result.length > 0) {
+          lobby = result[0].lobby_id;
+        }
+      })
+      .then(() => removeMember(socket.id))
+      .then(() => {
+        if (lobby !== null) {
+          Member.find({ lobby_id: lobby })
+            .then((mems) => {
+              io.to(lobby).emit('player-left', mems);
+            });
+        }
+      });
   });
 });
 
@@ -180,7 +313,7 @@ server.listen(8089, () => {
   //     console.log(Number(result[0].id));
   //     console.log(result[0]);
   //   });
-  getNewBook(1);
+  // getNewBook('0000');
 });
 
 module.exports = io;

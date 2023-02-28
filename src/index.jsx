@@ -12,6 +12,7 @@ import { io } from 'socket.io-client';
 
 import Lobby from './components/lobby.jsx';
 import Start from './components/start.jsx';
+import Game from './components/game.jsx';
 
 // CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
 const socket = io('http://localhost:8089');
@@ -25,13 +26,11 @@ function App() {
   useEffect(() => {
     socket.on('connect', () => {
       console.log('connected');
-      // socket.on('message', (data) => console.log(data));
     });
 
     // STOP LOADING WITH SUCCESSFUL HANDSHAKE
     socket.on('connection-success', (id) => {
       console.log('Connected with id:', id);
-      // socket.emit('gpt-request', { title: 'Chicken Little', author: 'Jennie Bennett' });
       isLoading(false);
     });
 
@@ -49,6 +48,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Start />} />
             <Route path="/lobby/:id" element={<Lobby />} />
+            <Route path="/lobby/:id/game" element={<Game />} />
           </Routes>
         </Router>
       </div>
