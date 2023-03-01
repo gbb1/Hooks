@@ -13,8 +13,12 @@ export default function Prompt({ book }) {
   return (
     <div>
       <div>{book.title}</div>
-      <div>{book.author}</div>
-      <div>Image</div>
+      <div>
+        By
+        {' '}
+        {book.author}
+      </div>
+      <div>- Chapter 1 -</div>
     </div>
   );
 }

@@ -42,6 +42,10 @@ export default function Start() {
     });
 
     setName(socket.id.substring(0, 7));
+
+    return () => {
+      socket.off();
+    };
     // const nameField = document.getElementById('name');
     // nameField.value = socket.id.substring(0, 7).toUpperCase();
   }, []);
@@ -67,8 +71,9 @@ export default function Start() {
   }
 
   return (
-    <div>
-      <h1>Socket id:</h1>
+    <div className="start-div">
+      <img className="logo-start" alt="logo" src="../../public/Union.svg" />
+      <h1 className="socket-id">Socket id:</h1>
       <h3>{socket.id}</h3>
       <h1>
         Lobby id:
@@ -76,18 +81,19 @@ export default function Start() {
       <h3>
         {lobby}
       </h3>
-      <form>
-        <input type="text" id="name" placeholder="Nickname" onChange={handleInput} />
-      </form>
-      <button type="button" onClick={createLobby}>Create Game</button>
-      <div>
+      <div className="forms-div">
         <form>
-          <input type="text" id="lobby-input" placeholder="Lobby ID" onChange={handleInput} />
-          <button type="submit" onClick={joinLobby}>
-            {/* <Link to="/lobby">Join</Link> */}
-            Join
-          </button>
+          <input className="input-start" type="text" id="name" placeholder="Nickname" onChange={handleInput} />
         </form>
+        <form>
+          <input className="input-start" type="text" id="lobby-input" placeholder="Lobby ID" onChange={handleInput} />
+        </form>
+      </div>
+      <div className="buttons-div">
+        <button className="button" type="button" onClick={createLobby}>Create Game</button>
+        <button className="button" type="button" onClick={joinLobby}>
+          Join
+        </button>
       </div>
     </div>
   );

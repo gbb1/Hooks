@@ -29,9 +29,10 @@ export default function Lobby() {
 
   const [timer, setTimer] = useState(120);
   const [roundTime, setRoundTime] = useState(120);
-  const [voteTime, setVoteTime] = useState(120);
+  const [voteTime, setVoteTime] = useState(30);
   const [start, setStart] = useState(false);
   const [ready, setReady] = useState(false);
+  const [admin, setAdmin] = useState('');
 
   useEffect(() => {
     membersRef.current = members;
@@ -48,6 +49,10 @@ export default function Lobby() {
       const allMembers = membersRef.current;
       console.log(allMembers);
       setMembers(mems);
+    });
+
+    socket.on('set-admin', (user) => {
+      setAdmin(user);
     });
 
     socket.on('timer-update', (newTime) => {
@@ -68,15 +73,23 @@ export default function Lobby() {
       }
     });
 
+    socket.on('starting-game', () => {
+      navigate(`/lobby/${lobbyId}/game`, { state: { lobbyId, vote_time: voteTime, round_time: roundTime } });
+    });
+
     socket.on('player-left', (ms) => {
       console.log('here');
       setMembers(ms);
     });
 
     return () => {
-      socket.off('update-timer');
+      socket.off();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(voteTime);
+  }, [voteTime]);
 
   // UPDATE GAME SETTING STATES
   function setter(event) {
@@ -102,14 +115,7 @@ export default function Lobby() {
       members,
     };
 
-    console.log(gameInfo);
-    navigate(`/lobby/${lobbyId}/game`, { state: { lobbyId } });
-    // if (timeInput.length > 0) {
-    //   setTimer(timeInput);
-    //   socket.emit('start-timer', { lobby: lobbyId, time: timeInput });
-    // }
-    // const inputField = document.getElementById('timer-setting');
-    // inputField.value = '';
+    socket.emit('game-start', lobbyId);
   }
 
   function getBooks() {
@@ -118,7 +124,12 @@ export default function Lobby() {
 
   return (
     <div>
-      <h1>{ lobbyId }</h1>
+      <h1 className="lobby-name">{ lobbyId }</h1>
+      <h1>
+        Admin:
+        {' '}
+        {admin}
+      </h1>
       <h1>Members: </h1>
       {
         members.map((m) => (
@@ -132,9 +143,6 @@ export default function Lobby() {
           </div>
         ))
       }
-      <h1>
-        {timer}
-      </h1>
       <form>
         <label htmlFor="round-timer">Time per round: </label>
         <input id="round-timer" type="number" onChange={setter} />

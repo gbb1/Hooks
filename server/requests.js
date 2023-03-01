@@ -71,13 +71,15 @@ function getGptAnswer(title, author) {
       )
         .then((response) => {
           const answer = response.data;
-          console.log('answer: ', answer.choices[0].text.split('"')[1]);
           let sentence = answer.choices[0].text.split('"')[1];
 
-          const i = 0;
-          while (sentence === undefined) {
+          let i = 0;
+          while (sentence === undefined && i < answer.choices.length) {
+            console.log('here');
             sentence = answer.choices[i].text.split('"')[1];
+            i++;
           }
+          console.log('SENTENCE', sentence);
           resolve(sentence);
         })
         .catch((err) => {

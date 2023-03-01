@@ -9,10 +9,13 @@ import {
 } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import { io } from 'socket.io-client';
+import './styles/test2.scss';
 
 import Lobby from './components/lobby.jsx';
 import Start from './components/start.jsx';
 import Game from './components/game.jsx';
+import Voting from './components/voting.jsx';
+import Scores from './components/scores.jsx';
 
 // CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
 const socket = io('http://localhost:8089');
@@ -49,6 +52,8 @@ function App() {
             <Route path="/" element={<Start />} />
             <Route path="/lobby/:id" element={<Lobby />} />
             <Route path="/lobby/:id/game" element={<Game />} />
+            <Route path="/lobby/:id/vote" element={<Voting />} />
+            <Route path="/lobby/:id/scores" element={<Scores />} />
           </Routes>
         </Router>
       </div>

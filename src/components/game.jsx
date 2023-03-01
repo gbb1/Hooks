@@ -18,12 +18,14 @@ export default function Game() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { lobbyId } = location.state;
+  const { lobbyId, vote_time, round_time } = location.state;
 
   const [loading, setLoading] = useState(true);
   const [sentence, setSentence] = useState('');
   const [wager, setWager] = useState('none');
-  const [timer, setTimer] = useState('');
+  const [timer, setTimer] = useState('----');
+  const [published, setPublished] = useState(false);
+  const [killer, setKiller] = useState(null);
 
   const [book, setBook] = useState({
     id: '0',
@@ -33,12 +35,17 @@ export default function Game() {
   });
 
   function publish() {
+    console.log(killer);
     socket.emit('player-answer', {
       lobby: lobbyId,
       sentence,
       wager,
       socket: socket.id,
+      killer,
     });
+    if (sentence.length > 0) {
+      setPublished(true);
+    }
   }
 
   function handleSentence(event) {
@@ -50,8 +57,20 @@ export default function Game() {
   }
 
   useEffect(() => {
-    socket.emit('game-start', lobbyId);
+    // setTimer(round_time);
+    // socket.emit('game-start', lobbyId);
     socket.emit('start-timer-round', lobbyId);
+
+    function handleKey(event) {
+      if (event.keyCode === 13 || event.which === 13) {
+        event.preventDefault();
+        if (!published && sentence.length > 0) {
+          publish();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKey);
 
     socket.on('game-book', (b) => {
       const { author, title, current } = b;
@@ -69,8 +88,25 @@ export default function Game() {
       setTimer(time);
     });
 
+    socket.on('timer-killer', (func) => {
+      console.log('FUNCTION', func);
+      setKiller(func.function);
+    });
+
+    socket.on('all-responses-in', () => {
+      navigate(`/lobby/${lobbyId}/vote`, { state: { lobbyId, vote_time, book } });
+    });
+
+    socket.on('timer-done', () => {
+      if (!published && sentence.length > 0) {
+        publish();
+      }
+      navigate(`/lobby/${lobbyId}/vote`, { state: { lobbyId, vote_time, book } });
+    });
+
     return () => {
-      socket.off('update-timer');
+      socket.off();
+      document.removeEventListener('keydown', handleKey);
     };
   }, []);
 
@@ -84,10 +120,14 @@ export default function Game() {
       <form>
         <input className="game-input" type="text" maxLength="255" placeholder="Once upon a time..." onChange={(e) => handleSentence(e)} />
       </form>
-      <div>Wager?</div>
-      <button id="writer" type="button" onClick={(e) => handleWager(e)}>Writer</button>
-      <button id="laughs" type="button" onClick={(e) => handleWager(e)}>Laughs</button>
-      <button type="button" onClick={publish}>Publish</button>
+      {/* <div>Wager?</div> */}
+      {/* <button id="writer" type="button" onClick={(e) => handleWager(e)}>Writer</button>
+      <button id="laughs" type="button" onClick={(e) => handleWager(e)}>Laughs</button> */}
+      {
+        published
+          ? <div>Waiting...</div>
+          : <button type="button" onClick={publish}>Publish</button>
+      }
     </div>
   );
 }
