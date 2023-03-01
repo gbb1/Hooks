@@ -72,7 +72,7 @@ export default function Start() {
 
   return (
     <div className="start-div">
-      <img className="logo-start" alt="logo" src="../../public/Union.svg" />
+      <img className="logo-start" alt="logo" src="/Users/gbennettbrandt/Desktop/BootCamp/MVP2/MVP/assets/Union.svg" />
       <h1 className="socket-id">Socket id:</h1>
       <h3>{socket.id}</h3>
       <h1>
