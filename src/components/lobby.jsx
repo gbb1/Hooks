@@ -115,7 +115,7 @@ export default function Lobby() {
 
   // START GAME
   function startGame() {
-    console.log('starting');
+    // console.log('starting');
     const gameInfo = {
       roundTime,
       voteTime,
@@ -188,15 +188,3 @@ export default function Lobby() {
   );
 }
 
-// useEffect(() => {
-//   console.log('here');
-//   setInterval(() => {
-//     if (timer > 0) {
-//       socket.emit('update-timer', { lobby: lobbyId, time: timer });
-//     }
-//   }, 1000);
-//   // interval();
-// }, [start]);
-
-// import App from '../index';
-// import { useSocket } from './useSocketContext';

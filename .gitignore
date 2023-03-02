@@ -9,3 +9,4 @@ src/components/FElobby.jsx
 src/components/FEScores.jsx
 src/components/FEVoting.jsx
 src/deprecate/*
+package-lock.json

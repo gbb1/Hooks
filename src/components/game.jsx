@@ -38,15 +38,17 @@ export default function Game() {
 
   function publish() {
     console.log(killer);
-    socket.emit('player-answer', {
-      lobby: lobbyId,
-      sentence,
-      wager,
-      socket: socket.id,
-      killer,
-    });
     if (sentence.length > 0) {
-      setPublished(true);
+      socket.emit('player-answer', {
+        lobby: lobbyId,
+        sentence,
+        wager,
+        socket: socket.id,
+        killer,
+      });
+      if (sentence.length > 0) {
+        setPublished(true);
+      }
     }
   }
 
