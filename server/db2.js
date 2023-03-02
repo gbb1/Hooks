@@ -81,7 +81,7 @@ const closeDB = () => {
   mongoose.connection.close();
 };
 
-connectDB();
+// connectDB();
 // addLobby('0000')
 //   .then((out) => {
 //     console.log(out);

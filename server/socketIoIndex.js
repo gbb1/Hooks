@@ -23,6 +23,11 @@ app.use(morgan('dev'));
 app.use('/', express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
 
+// app.get('/', (req, res) => {
+//   console.log('GET');
+//   res.send('GET REQUEST');
+// });
+
 // CREATE AN HTTP INSTANCE OF EXPRESS SERVER
 const server = require('http').createServer(app);
 
