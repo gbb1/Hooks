@@ -29,14 +29,6 @@ const books = new mongoose.Schema({
   url: String,
 });
 
-// const answer = new mongoose.Schema({
-//   player: String,
-//   round: Number,
-//   sentence: String,
-//   wager: String,
-
-// });
-
 const lobby = new mongoose.Schema({
   lobby_id: { type: String, unique: true },
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
@@ -65,27 +57,17 @@ const lobby = new mongoose.Schema({
 //   summary: String,
 // });
 
-// const users = new mongoose.Schema({
-//   users: member,
-// });
-
-// const books = new mongoose.Schema({
-//   books: [book],
-// });
-
 const Lobbies = mongoose.model('Lobbies', lobby);
-// const Users = mongoose.model('Users', users);
 const Books = mongoose.model('Books', books);
 // const Book = mongoose.model('book', book);
 const Member = mongoose.model('Member', member);
 // const BooksUrl = mongoose.model('BooksUrl', booksUrl);
-// const Answers = mongoose.model('Answers', answer);
 
 /* --------------------------------------------------------------------- */
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1/hook');
+    await mongoose.connect('mongodb://3.16.90.3/hook');
     console.log('MongoDB connected...');
   } catch (error) {
     console.log(`error: ${error}`);
@@ -140,9 +122,7 @@ module.exports = {
   connectDB,
   closeDB,
   Lobbies,
-  // Users,
   Books,
   Member,
   // BooksUrl,
-  // Answers,
 };
