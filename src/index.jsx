@@ -26,7 +26,7 @@ import Logo from './components/elements/logo.jsx';
 
 // CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
 // const socket = io('http://localhost:8089');
-const socket = io('http://3.16.90.3:8089');
+const socket = io('http://localhost:8089');
 export const SocketContext = createContext(socket);
 
 const app = createRoot(document.getElementById('app'));
