@@ -1,0 +1,260 @@
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  font-family: Cardo;
+}
+
+body, html {
+  margin: 0;
+}
+
+@media screen and (max-width: 767px) {
+
+  .lobby-parent {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin-top: 10vh;
+  }
+
+  .lobby-name {
+    font-weight: bold;
+    margin-bottom: 20px;
+    scale: 2;
+    margin-top: 10px;
+  }
+
+  .subheader {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-bottom: 20px;
+  }
+
+
+  .subheader-intro {
+    color: black;
+  }
+
+  .subheader-content {
+    margin-left: 5px;
+  }
+
+  .members-parent {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    width: 200px;
+    margin-bottom: 20px;
+  }
+
+  .members-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .member {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    // border: solid green;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+    .member-ready {
+      margin-left: 5px;
+    }
+
+    @keyframes fadein {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .member-waiting {
+      animation-name: fadein;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+    }
+  }
+
+  .label-parent {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    margin-top: 10px;
+
+    .label-sub {
+      scale: .7;
+      align-self: center;
+    }
+  }
+
+  .lobby-forms {
+    // border: none;
+    width: 30vw;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    // border: solid orange;
+    width: fit-content;
+    margin-bottom: 20px;
+  }
+
+  .input {
+    outline: none;
+    border: none;
+    box-shadow: inset 0 0 7px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 5px;
+    width: max(40vw, 200px);
+    margin-top: 2px;
+    margin-top: 5px;
+  }
+
+  .button {
+    width: max(10vw, 100px);
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+  }
+
+  .button:hover {
+    opacity: .75;
+  }
+
+
+}
+
+.lobby-parent {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  margin-top: 10vh;
+}
+
+.lobby-name {
+  font-weight: bold;
+  margin-bottom: 20px;
+  scale: 2;
+  margin-top: 10px;
+}
+
+.subheader {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 20px;
+}
+
+
+.subheader-intro {
+  color: black;
+}
+
+.subheader-content {
+  margin-left: 5px;
+}
+
+.members-parent {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.members-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.member {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  // border: solid green;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  width: 100%;
+  .member-ready {
+    margin-left: 5px;
+  }
+
+  @keyframes fadein {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .member-waiting {
+    animation-name: fadein;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+  }
+}
+
+.label-parent {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-top: 10px;
+
+  .label-sub {
+    scale: .7;
+    align-self: center;
+  }
+}
+
+.lobby-forms {
+  // border: none;
+  width: 30vw;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  // border: solid orange;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.input {
+  outline: none;
+  border: none;
+  box-shadow: inset 0 0 7px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 5px;
+  width: max(20vw, 200px);
+  margin-top: 2px;
+  margin-top: 5px;
+}
+
+.button {
+  width: max(10vw, 100px);
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+}
+
+.button:hover {
+  opacity: .75;
+}

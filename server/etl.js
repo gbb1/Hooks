@@ -3,8 +3,8 @@
 const fs = require('fs');
 const csv = require('csv-parser');
 const axios = require('axios');
-const { closeDB, connectDB, Books } = require('./db2.js');
 const path = require('path');
+const { closeDB, connectDB, Books } = require('./db2.js');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 async function readData() {
@@ -13,7 +13,11 @@ async function readData() {
   const data = [];
   let counter = 0;
 
-  fs.createReadStream('./data/bookData2.csv', { highWaterMark: 128 * 1024 })
+  function hasPunctuationFollowedByPeriod(str) {
+    return /[!@#$%^&*(),.?":{}|<>]/.test(str.charAt(str.length - 2)) && str.charAt(str.length - 1) === '.';
+  }
+
+  fs.createReadStream('./data/bookData3.csv', { highWaterMark: 128 * 1024 })
     .pipe(csv())
     .on('data', async (book) => {
       counter++;
@@ -21,13 +25,18 @@ async function readData() {
         console.log(counter);
       }
 
-      const {
+      let {
         Id, Sentence, Title, Author,
       } = book;
       console.log(book);
 
       if (Author === undefined) {
         console.log('FOUND:', book);
+      }
+
+      if (hasPunctuationFollowedByPeriod(Sentence)) {
+        Sentence = Sentence.slice(0, -1);
+        console.log(Sentence);
       }
 
       const newBook = new Books({
@@ -96,14 +105,14 @@ async function readDataURL() {
     });
 }
 
-// readData();
+readData();
 // readDataURL();
 // closeDB();
 
 function getBooksTest(title, author) {
   console.log('starting request');
 
-  const url = `https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=${process.env.AUTH_SECRET}&country=US`; //+inauthor:${'Suzanne Collins'}
+  const url = `https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=${process.env.AUTH_SECRET}&country=US`; // +inauthor:${'Suzanne Collins'}
   axios.get(url)
     // headers: {
     //   Authorization: process.env.AUTH_SECRET,

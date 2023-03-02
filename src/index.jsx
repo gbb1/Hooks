@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable import/extensions */
 /* eslint-disable new-cap */
@@ -9,13 +11,18 @@ import {
 } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import { io } from 'socket.io-client';
-import './styles/test2.scss';
+import './styles/start.scss';
 
 import Lobby from './components/lobby.jsx';
 import Start from './components/start.jsx';
 import Game from './components/game.jsx';
 import Voting from './components/voting.jsx';
 import Scores from './components/scores.jsx';
+import Logo from './components/elements/logo.jsx';
+// import FELobby from './components/FElobby.jsx';
+// import FEGame from './components/FEGame.jsx';
+// import FEVoting from './components/FEVoting.jsx';
+// import FEScores from './components/FEScores.jsx';
 
 // CONNECT TO THE SOCKET AND SETUP CONTEXT ACCESS FOR CHILD COMPONENTS
 const socket = io('http://localhost:8089');
@@ -42,7 +49,7 @@ function App() {
     };
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><div className="loading"><Logo /></div></div>;
 
   return (
     <SocketContext.Provider value={socket}>

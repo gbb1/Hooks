@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 // IMPORT SOCKET CONTEXT
 import { SocketContext } from '../index.jsx';
+import Logo from './elements/logo.jsx';
 
 export default function Scores() {
   const socket = useContext(SocketContext);
@@ -26,35 +27,23 @@ export default function Scores() {
   const [funniest, setFunny] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // function sortWriter(array) {
-  //   const out = array.sort((a, b) => {
-  //     if (a.writer_votes === undefined && b.writer_votes === undefined) {
-  //       return b.writer_votes - a.writer_votes;
-  //     }
-  //     if (a.writer_votes === undefined) {
-  //       return b;
-  //     }
-  //     if (b.writer_votes === undefined) {
-  //       return a;
-  //     }
-  //   });
-  //   return out;
-  // }
   useEffect(() => {
     socket.emit('get-scores', lobbyId);
 
     socket.on('scores', (answers) => {
-      console.log('getting scores', answers);
-      const ranked = answers.slice(0);
-      const writer = ranked.sort((a, b) => b.writer_votes - a.writer_votes);
-      const laughs = ranked.sort((a, b) => b.laugh_votes - a.laugh_votes);
-
+      // console.log('getting scores', answers);
+      const r1 = answers.slice(0);
+      const writer = r1.sort((a, b) => Number(b.writer_votes) - Number(a.writer_votes));
+      // console.log('WRITER', writer);
+      const r2 = answers.slice(0);
+      const laughs = r2.sort((a, b) => Number(b.laugh_votes) - Number(a.laugh_votes));
+      // console.log('LAUGHS', laughs);
       const correct1 = answers.filter((a) => a.socket === 'author');
       const gpt1 = answers.filter((a) => a.socket === 'gpt');
 
       const funny = laughs[0];
-      console.log('RANKED', ranked);
-      console.log('FUNNY', funny);
+      // console.log('RANKED', ranked);
+      // console.log('FUNNY', funny);
       setScores(writer);
       setCorrect(correct1[0]);
       setGpt(gpt1[0]);
@@ -66,10 +55,14 @@ export default function Scores() {
     socket.on('new-game-start', () => {
       navigate(`/lobby/${lobbyId}`, { state: { lobbyId } });
     });
+
+    return () => {
+      socket.off();
+    };
   }, []);
 
   useEffect(() => {
-    console.log(correct, gpt);
+    // console.log(correct, gpt);
     if (correct !== null && gpt !== null) {
       setLoading(false);
     }
@@ -80,44 +73,49 @@ export default function Scores() {
   }
 
   if (loading) {
-    return (
-      <div>Calculating score...</div>
-    );
+    return <div><div className="loading"><Logo /></div></div>;
   }
 
   return (
-    <div>
-      <div>
-        Top voted:
-        <div>
+    <div className="score-parent">
+      <div className="score-title">- Round summary -</div>
+      <div className="top-voted score-show">
+        <div className="score-title-2">Top voted</div>
+        <div className="divider-div"><hr className="divider" /></div>
+        <div className="score-answer">
           {scores[0].sentence}
         </div>
       </div>
       {
         funniest !== null
           ? (
-            <div>
-              Funniest:
-              <div>
+            <div className="funniest score-show">
+              <div className="score-title-2">&#129315;</div>
+              <div className="divider-div"><hr className="divider" /></div>
+              <div className="score-answer">
                 {funniest.sentence}
               </div>
             </div>
           )
           : null
       }
-      <div>
-        Correct answer:
-        <div>
+      <div className="correct-voted score-show">
+        <div className="score-title-2">Correct</div>
+        <div className="divider-div"><hr className="divider" /></div>
+        <div className="score-answer">
           {correct.sentence}
         </div>
       </div>
-      <div>
-        GPT&apos;s answer:
-        <div>
+      <div className="gpt-voted score-show">
+        <div className="score-title-2">GPT&apos;s answer</div>
+        <div className="divider-div"><hr className="divider" /></div>
+        <div className="score-answer">
           {gpt.sentence}
         </div>
       </div>
-      <button type="button" onClick={newGame}>Run it back</button>
+      <div className="footer">
+        <button className="button" type="button" onClick={newGame}>Run it back</button>
+      </div>
     </div>
   );
 }

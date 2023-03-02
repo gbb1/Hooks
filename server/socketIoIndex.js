@@ -1,3 +1,6 @@
+/* eslint-disable import/extensions */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-mixed-operators */
@@ -85,7 +88,7 @@ function startTimer(s, lobby, start, vote = 0) {
   let timeLeft = start;
   const interval = setInterval(() => {
     if (timeLeft === start) {
-      console.log('sending killer', killer);
+      // console.log('sending killer', killer);
       s.to(lobby).emit('timer-killer', { function: JSON.stringify(killer) });
     }
     timeLeft--;
@@ -246,13 +249,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join-lobby', ({ id, nickname }) => {
-    console.log('lobby request received at,', id);
+    console.log('lobby request received at,', id.trim());
     console.log(nickname);
     if (nickname === '') {
       nickname = socket.id.substring(0, 7).toUpperCase();
       console.log('NICKNAME', nickname);
     }
-
+    id = id.trim();
     checkLobby(id)
       .then((result) => {
         if (result.length === 0) {
@@ -290,7 +293,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('ready-up', (data) => {
-    console.log('player ready');
+    // console.log('player ready');
     Member.findOneAndUpdate({ socket_id: socket.id }, { ready: true })
       .then((user) => Member.find({ lobby_id: user.lobby_id }))
       .then((members) => {
@@ -302,9 +305,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('set-times', (data) => {
+    // console.log('TIMES:', data.vote_time, data.round_time);
     checkAdmin(data.lobby, socket.id)
       .then((check) => {
-        // console.log('SETTING TIME', check);
+        // console.log('SETTING TIME', data);
         if (check) {
           setPrefs(data.lobby, data)
             .then((res) => {
@@ -320,23 +324,17 @@ io.on('connection', (socket) => {
     checkAdmin(data, socket.id)
       .then((check) => {
         if (check) {
-          console.log('checked!');
+          // console.log('checked!');
           Lobbies.find({ lobby_id: data })
             .then((results) => {
               const time = results[0].round_time;
               killer = startTimer(io, data, time);
-              console.log('getting cleare', killer);
+              // console.log('getting cleare', killer);
             });
         }
       })
       .catch((err) => console.log(err));
   });
-
-  // socket.on('dec-timer', (data) => {
-  //   if (data.time >= 0) {
-  //     setTimeout(() => (io.to(data.lobby).emit('timer-update', data.time)), 1000);
-  //   }
-  // });
 
   socket.on('game-start', (lobby) => {
     checkAdmin(lobby, socket.id)
@@ -357,9 +355,9 @@ io.on('connection', (socket) => {
         return checkDone(data.lobby);
       })
       .then((check) => {
-        console.log('CHECKING', check);
+        // console.log('CHECKING', check);
         if (check) {
-          console.log(typeof data.killer);
+          // console.log(typeof data.killer);
           killer();
           io.to(data.lobby).emit('all-responses-in');
         }
@@ -369,27 +367,6 @@ io.on('connection', (socket) => {
       });
   });
 
-  // socket.on('votes-in', (lobby) => {
-  //   Member.findOne({ lobby_id: lobby, socket_id: socket.id })
-  //     .then((memb) => Lobbies.findOneAndUpdate(
-  //       { lobby_id: lobby },
-  //       { $push: { voted: memb._id } },
-  //       { new: true },
-  //     ))
-  //     .then((lob) => {
-  //       if (lob.members.length === lob.voted.length) {
-  //         console.log('all votes in');
-  //         io.to(lobby).emit('all-votes-in', {});
-  //       } else {
-  //         Member.find({ _id: { $in: lob.voted } })
-  //           .then((results) => {
-  //             console.log(results);
-  //             io.to(lobby).emit('voter-update', results);
-  //           });
-  //       }
-  //     });
-  // });
-
   socket.on('gpt-request', (data) => {
     requests.gptAnswer(data.title, data.author);
   });
@@ -397,13 +374,21 @@ io.on('connection', (socket) => {
   /* VOTING */
 
   socket.on('start-voting', (data) => {
-    Lobbies.find({ lobby_id: data.lobby })
+    Lobbies.findOne({ lobby_id: data.lobby })
       .then((results) => {
         // console.log('RESPONSE FROM GETANS', results);
-        io.to(data.lobby).emit('player-answers', results[0].answers);
+        Books.findById(results.current)
+          .then((res) => {
+            // console.log(res);
+            io.to(data.lobby).emit('voting-book', res);
+          })
+          .then(() => {
+            io.to(data.lobby).emit('player-answers', results.answers);
+          });
+        return results;
       })
-      .then(() => {
-        startTimer(io, data.lobby, data.vote_time, 1);
+      .then((results) => {
+        startTimer(io, data.lobby, results.vote_time, 1);
       })
       .catch((err) => {
         console.log(err);
@@ -459,12 +444,12 @@ io.on('connection', (socket) => {
       ))
       .then((lob) => {
         if (lob.members.length === lob.voted.length) {
-          console.log('all votes in');
+          // console.log('all votes in');
           io.to(lobby).emit('all-votes-in', {});
         } else {
           Member.find({ _id: { $in: lob.voted } })
             .then((results) => {
-              console.log(results);
+              console.log('VOTERS', results);
               io.to(lobby).emit('voter-update', results);
             });
         }
@@ -483,20 +468,11 @@ io.on('connection', (socket) => {
       })
       .then((result) => {
         if (result !== null) {
-          console.log('SCORING:', result.answers);
+          // console.log('SCORING:', result.answers);
           io.to(lobby).emit('scores', result.answers);
         }
       })
       .catch((err) => console.log(err));
-    // console.log('getting-scores request');
-    // Lobbies.findOne({ lobby_id: lobby })
-    //   .then((result) => {
-    //     console.log('WHAT IT DID:', result.answers);
-
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   });
 
   socket.on('run-it-back', (lobby) => {
@@ -510,9 +486,15 @@ io.on('connection', (socket) => {
       },
     )
       .then((result) => {
-        if (result.answers.length === 0) {
-          io.to(lobby).emit('new-game-start', {});
-        }
+        Member.updateMany(
+          { lobby_id: lobby },
+          { ready: false },
+        )
+          .then((res) => {
+            if (result.answers.length === 0) {
+              io.to(lobby).emit('new-game-start', {});
+            }
+          });
       });
   });
 
@@ -548,27 +530,6 @@ io.on('connection', (socket) => {
 server.listen(8089, () => {
   console.log('listening on port:8089');
   connectDB();
-  // getBook()
-  //   .then((result) => {
-  //     console.log(Number(result[0].id));
-  //     console.log(result[0]);
-  //   });
-  // getNewBook('0000');
 });
 
 module.exports = io;
-
-// socket.on('message', (message) => {
-//   console.log(message);
-//   // io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
-// });
-
-// socket.on('test', (content) => {
-//   console.log(content);
-//   io.emit('message', `${socket.id.substr(0, 2)}: ${content}`);
-// });
-
-// socket.on('lobby-post', (data) => {
-//   console.log(data.lobby, data.post);
-//   io.to(data.lobby).emit('new-post', data.post);
-// });

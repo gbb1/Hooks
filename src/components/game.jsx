@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/destructuring-assignment */
@@ -12,6 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { SocketContext } from '../index.jsx';
 import Prompt from './elements/prompt.jsx';
+import Logo from './elements/logo.jsx';
 
 export default function Game() {
   const socket = useContext(SocketContext);
@@ -23,7 +25,7 @@ export default function Game() {
   const [loading, setLoading] = useState(true);
   const [sentence, setSentence] = useState('');
   const [wager, setWager] = useState('none');
-  const [timer, setTimer] = useState('----');
+  const [timer, setTimer] = useState('-');
   const [published, setPublished] = useState(false);
   const [killer, setKiller] = useState(null);
 
@@ -84,12 +86,12 @@ export default function Game() {
     });
 
     socket.on('timer-update', (time) => {
-      console.log(time);
+      // console.log(time);
       setTimer(time);
     });
 
     socket.on('timer-killer', (func) => {
-      console.log('FUNCTION', func);
+      // console.log('FUNCTION', func);
       setKiller(func.function);
     });
 
@@ -101,6 +103,7 @@ export default function Game() {
       if (!published && sentence.length > 0) {
         publish();
       }
+      console.log('BOOK', book);
       navigate(`/lobby/${lobbyId}/vote`, { state: { lobbyId, vote_time, book } });
     });
 
@@ -111,22 +114,24 @@ export default function Game() {
   }, []);
 
   if (loading) {
-    return <div>Loading round...</div>;
+    return <div><div className="loading"><Logo /></div></div>;
   }
   return (
-    <div>
-      <div>{timer}</div>
-      <Prompt book={book} />
-      <form>
-        <input className="game-input" type="text" maxLength="255" placeholder="Once upon a time..." onChange={(e) => handleSentence(e)} />
-      </form>
+    <div className="game-parent">
+      <div className="timer">{timer}</div>
+      <div className="prompt-div">
+        <Prompt book={book} />
+      </div>
+      <div className="input-container">
+        <textarea id="game-text" className="game-input" placeholder="Once upon a time..." onChange={(e) => handleSentence(e)} />
+      </div>
       {/* <div>Wager?</div> */}
       {/* <button id="writer" type="button" onClick={(e) => handleWager(e)}>Writer</button>
       <button id="laughs" type="button" onClick={(e) => handleWager(e)}>Laughs</button> */}
       {
         published
-          ? <div>Waiting...</div>
-          : <button type="button" onClick={publish}>Publish</button>
+          ? <div className="waiting">Waiting...</div>
+          : <button className="button-game" type="button" onClick={publish}>Publish</button>
       }
     </div>
   );

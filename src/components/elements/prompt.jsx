@@ -11,14 +11,14 @@ import React, {
 
 export default function Prompt({ book }) {
   return (
-    <div>
-      <div>{book.title}</div>
-      <div>
+    <div className="innerPromptDiv">
+      <div className="book-title">{book.title}</div>
+      <div className="author">
         By
         {' '}
         {book.author}
       </div>
-      <div>- Chapter 1 -</div>
+      <div className="chapter">- Chapter 1 -</div>
     </div>
   );
 }

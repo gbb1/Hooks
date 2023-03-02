@@ -1,13 +1,14 @@
-/* eslint-disable camelcase */
-const express = require('express');
-// const db = require('../readDataReviews');
+// /* eslint-disable no-console */
+// /* eslint-disable camelcase */
+// const express = require('express');
+// // const db = require('../readDataReviews');
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get('/test', (req, res) => {
-  console.log('getting test request');
+// router.get('/test', (req, res) => {
+//   console.log('getting test request');
 
-  res.status(200).send('Test request received');
-});
+//   res.status(200).send('Test request received');
+// });
 
-module.exports = router;
+// module.exports = router;

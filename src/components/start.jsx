@@ -17,6 +17,7 @@ import { io } from 'socket.io-client';
 import { SocketContext } from '../index.jsx';
 
 import Lobby from './lobby.jsx';
+import Logo from './elements/logo.jsx';
 
 export default function Start() {
   // USE SOCKET CONNECTION CONTEXT
@@ -26,6 +27,7 @@ export default function Start() {
   const [lobby, setLobby] = useState('');
   const [lobbyId, setLobbyId] = useState('');
   const [name, setName] = useState('');
+  const [hasLobby, showLobby] = useState(false);
 
   // ADD SOCKET EVENT LISTENERS SPECIFIC TO THIS COMPONENT
   useEffect(() => {
@@ -33,6 +35,7 @@ export default function Start() {
       setLobby(id);
       const inputField = document.getElementById('lobby-input');
       inputField.value = id;
+      showLobby(true);
       setLobbyId(id);
     });
 
@@ -72,28 +75,48 @@ export default function Start() {
 
   return (
     <div className="start-div">
-      <img className="logo-start" alt="logo" src="/Users/gbennettbrandt/Desktop/BootCamp/MVP2/MVP/assets/Union.svg" />
-      <h1 className="socket-id">Socket id:</h1>
-      <h3>{socket.id}</h3>
-      <h1>
-        Lobby id:
-      </h1>
-      <h3>
-        {lobby}
-      </h3>
-      <div className="forms-div">
-        <form>
-          <input className="input-start" type="text" id="name" placeholder="Nickname" onChange={handleInput} />
-        </form>
-        <form>
-          <input className="input-start" type="text" id="lobby-input" placeholder="Lobby ID" onChange={handleInput} />
-        </form>
-      </div>
-      <div className="buttons-div">
-        <button className="button" type="button" onClick={createLobby}>Create Game</button>
-        <button className="button" type="button" onClick={joinLobby}>
-          Join
-        </button>
+      <div className="nested1">
+        <div className="header">
+          <div className="logo-div1">
+            <Logo />
+          </div>
+          <div className="start-title">hooks</div>
+        </div>
+        {/* <h1 className="socket-id">Socket id:</h1>
+        <h3>{socket.id}</h3> */}
+        {/* <h1>
+          Lobby id:
+        </h1> */}
+        <div>
+          {
+            hasLobby
+              ? (
+                <div className="lobby-info">
+                  <div className="invite-code">
+                    Invite code:
+                  </div>
+                  <div className="lobby-id">
+                    {lobby}
+                  </div>
+                </div>
+              )
+              : (<div className="spacer"> </div>)
+        }
+        </div>
+        <div className="forms-div">
+          <form>
+            <input className="input-start" autoComplete="off" type="text" id="name" placeholder="Nickname" onChange={handleInput} />
+          </form>
+          <form>
+            <input className="input-start" autoComplete="off" type="text" id="lobby-input" placeholder="Lobby code" onChange={handleInput} />
+          </form>
+        </div>
+        <div className="buttons-div">
+          <button className="button" type="button" onClick={createLobby}>Create Game</button>
+          <button className="button" type="button" onClick={joinLobby}>
+            Join
+          </button>
+        </div>
       </div>
     </div>
   );

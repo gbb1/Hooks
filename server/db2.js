@@ -29,13 +29,13 @@ const books = new mongoose.Schema({
   url: String,
 });
 
-const answer = new mongoose.Schema({
-  player: String,
-  round: Number,
-  sentence: String,
-  wager: String,
+// const answer = new mongoose.Schema({
+//   player: String,
+//   round: Number,
+//   sentence: String,
+//   wager: String,
 
-});
+// });
 
 const lobby = new mongoose.Schema({
   lobby_id: { type: String, unique: true },
@@ -47,7 +47,7 @@ const lobby = new mongoose.Schema({
   admin: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
   submitted: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   voted: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
-  current: String,
+  current: { type: mongoose.Schema.Types.ObjectId, ref: 'Books' },
   author: String,
   title: String,
   vote_time: Number,
@@ -56,30 +56,30 @@ const lobby = new mongoose.Schema({
   gpt: String,
 });
 
-const booksUrl = new mongoose.Schema({
-  id: { type: String, required: true },
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  sentence: { type: String, required: true },
-  url: String,
-  summary: String,
-});
+// const booksUrl = new mongoose.Schema({
+//   id: { type: String, required: true },
+//   title: { type: String, required: true },
+//   author: { type: String, required: true },
+//   sentence: { type: String, required: true },
+//   url: String,
+//   summary: String,
+// });
 
-const users = new mongoose.Schema({
-  users: member,
-});
+// const users = new mongoose.Schema({
+//   users: member,
+// });
 
 // const books = new mongoose.Schema({
 //   books: [book],
 // });
 
 const Lobbies = mongoose.model('Lobbies', lobby);
-const Users = mongoose.model('Users', users);
+// const Users = mongoose.model('Users', users);
 const Books = mongoose.model('Books', books);
 // const Book = mongoose.model('book', book);
 const Member = mongoose.model('Member', member);
-const BooksUrl = mongoose.model('BooksUrl', booksUrl);
-const Answers = mongoose.model('Answers', answer);
+// const BooksUrl = mongoose.model('BooksUrl', booksUrl);
+// const Answers = mongoose.model('Answers', answer);
 
 /* --------------------------------------------------------------------- */
 
@@ -140,9 +140,9 @@ module.exports = {
   connectDB,
   closeDB,
   Lobbies,
-  Users,
+  // Users,
   Books,
   Member,
-  BooksUrl,
-  Answers,
+  // BooksUrl,
+  // Answers,
 };

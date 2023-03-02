@@ -12,6 +12,7 @@ import {
   useLocation, useNavigate, BrowserRouter as Router, Link,
   Route, Routes,
 } from 'react-router-dom';
+import { AiFillCheckCircle, AiOutlineEllipsis } from 'react-icons/ai';
 
 // IMPORT SOCKET CONTEXT
 import { SocketContext } from '../index.jsx';
@@ -63,7 +64,7 @@ export default function Lobby() {
     socket.on('player-ready', (ms) => {
       console.log('player ready', ms);
       setMembers(ms);
-      setReady(true); // DELETE THIS;
+      // setReady(true); // DELETE THIS;
       if (ms.length > 1) {
         const readies = ms.every((m) => m.ready);
         console.log(readies);
@@ -93,11 +94,17 @@ export default function Lobby() {
 
   // UPDATE GAME SETTING STATES
   function setter(event) {
-    const setters = {
-      'round-timer': setRoundTime,
-      'voting-timer': setVoteTime,
-    };
-    setters[event.target.id](event.target.value);
+    if (event.target.id === 'voting-timer') {
+      console.log(event.target.value);
+      setVoteTime(event.target.value);
+    } else {
+      setRoundTime(event.target.value);
+    }
+    // const setters = {
+    //   'round-timer': setRoundTime,
+    //   'voting-timer': setVoteTime,
+    // };
+    // setters[event.target.id](event.target.value);
   }
 
   // READY CURRENT PLAYER
@@ -123,39 +130,59 @@ export default function Lobby() {
   }
 
   return (
-    <div>
-      <h1 className="lobby-name">{ lobbyId }</h1>
-      <h1>
-        Admin:
-        {' '}
-        {admin}
-      </h1>
-      <h1>Members: </h1>
-      {
-        members.map((m) => (
-          <div>
-            {m.username}
-            {
-              m.ready
-                ? <div>Ready</div>
-                : null
-            }
-          </div>
-        ))
-      }
-      <form>
-        <label htmlFor="round-timer">Time per round: </label>
-        <input id="round-timer" type="number" onChange={setter} />
-        <br />
-        <label htmlFor="voting-timer">Voting time: </label>
-        <input id="voting-timer" type="number" onChange={setter} />
-        <br />
+    <div className="lobby-parent">
+      <div className="title-accent">Invite code:</div>
+      <div className="lobby-name">{ lobbyId }</div>
+      <div className="subheader">
+        <div className="subheader-intro">
+          Host:
+        </div>
+        <div className="subheader-content">
+          {admin}
+        </div>
+      </div>
+      <div className="members-parent">
+        <div className="members-title">Members: </div>
+        {
+          members.map((m) => (
+            <div className="member">
+              <div className="username">{m.username}</div>
+              {
+                m.ready
+                  ? (
+                    <div className="member-ready">
+                      <AiFillCheckCircle />
+                    </div>
+                  )
+                  : (
+                    <div className="member-waiting">
+                      <AiOutlineEllipsis />
+                    </div>
+                  )
+              }
+            </div>
+          ))
+        }
+      </div>
+      <div className="lobby-forms">
+        <div className="label-parent">
+          <div className="label">Round time: </div>
+          <div className="label-sub">(sec)</div>
+        </div>
+        <input className="input" id="round-timer" autoComplete="off" type="number" placeholder="60 - 300 sec" onChange={(e) => setter(e)} />
+        <div className="label-parent">
+          <div className="label">Voting time: </div>
+          <div className="label-sub">(sec)</div>
+        </div>
+        <input className="input" id="voting-timer" autoComplete="off" type="number" placeholder="30 - 120 sec" onChange={(e) => setter(e)} />
+      </div>
+      <div className="buttons">
         {
           ready
-            ? <button type="button" onClick={startGame}>Start</button>
-            : <button type="button" onClick={getReady}>Ready</button> // CHANGE THIS !!!!!!!!!!!!!! back to getReady
+            ? <button className="button" type="button" onClick={startGame}>Start</button>
+            : <button className="button" type="button" onClick={getReady}>Ready</button> // CHANGE THIS !!!!!!!!!!!!!! back to getReady
         }
-      </form>
+      </div>
       {/* <button type="button" onClick={getBooks}>Books</button> */}
     </div>
   );
