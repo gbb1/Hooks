@@ -55,55 +55,55 @@ async function readData() {
     });
 }
 
-async function readDataURL() {
-  await connectDB();
+// async function readDataURL() {
+//   await connectDB();
 
-  const data = [];
-  let counter = 0;
+//   const data = [];
+//   let counter = 0;
 
-  fs.createReadStream('./data/bookData2.csv', { highWaterMark: 128 * 1024 })
-    .pipe(csv())
-    .on('data', async (book) => {
-      counter++;
-      if (counter % 5000 === 0) {
-        console.log(counter);
-      }
+//   fs.createReadStream('./data/bookData2.csv', { highWaterMark: 128 * 1024 })
+//     .pipe(csv())
+//     .on('data', async (book) => {
+//       counter++;
+//       if (counter % 5000 === 0) {
+//         console.log(counter);
+//       }
 
-      const {
-        Id, Sentence, Title, Author,
-      } = book;
-      console.log(book);
+//       const {
+//         Id, Sentence, Title, Author,
+//       } = book;
+//       console.log(book);
 
-      const url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${Title}+inauthor:${Author}&key=${process.env.AUTH_SECRET}`;
+//       const url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${Title}+inauthor:${Author}&key=${process.env.AUTH_SECRET}`;
 
-      await axios.get(url, {
-        headers: {
-          Authorization: process.env.AUTH_SECRET,
-        },
-        // params: {
-        //   q: 'subject:fiction',
-        // },
-      })
-        .then(({ data }) => {
-          console.log(data).items;
-        })
-        .catch((err) => console.log('Failed to get book', err));
-    })
+//       await axios.get(url, {
+//         headers: {
+//           Authorization: process.env.AUTH_SECRET,
+//         },
+//         // params: {
+//         //   q: 'subject:fiction',
+//         // },
+//       })
+//         .then(({ data }) => {
+//           console.log(data).items;
+//         })
+//         .catch((err) => console.log('Failed to get book', err));
+//     })
 
-  // const newBook = new Books({
-  //   id: Id,
-  //   sentence: Sentence,
-  //   title: Title,
-  //   author: Author,
-  // });
+//   // const newBook = new Books({
+//   //   id: Id,
+//   //   sentence: Sentence,
+//   //   title: Title,
+//   //   author: Author,
+//   // });
 
-  // await newBook.save((err, result) => {
-  //   console.log('ERror:', err, 'REsult:', result);
-  // });
-    .on('end', async () => {
-      console.log(`all the data is: ${data.length}`);
-    });
-}
+//   // await newBook.save((err, result) => {
+//   //   console.log('ERror:', err, 'REsult:', result);
+//   // });
+//     .on('end', async () => {
+//       console.log(`all the data is: ${data.length}`);
+//     });
+// }
 
 readData();
 // readDataURL();

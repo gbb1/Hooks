@@ -6,6 +6,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const member = new mongoose.Schema({
   socket_id: { type: String, unique: true },
@@ -67,7 +69,7 @@ const Member = mongoose.model('Member', member);
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://3.16.90.3/hook');
+    await mongoose.connect(`${process.env.MONGO_URL}`);
     console.log('MongoDB connected...');
   } catch (error) {
     console.log(`error: ${error}`);
