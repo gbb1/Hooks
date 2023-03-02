@@ -4,6 +4,7 @@ public/bundle.js
 public/*
 .eslintrc.json
 data/bookData2.csv
+data/bookData3.csv
 src/components/FEGame.jsx
 src/components/FElobby.jsx
 src/components/FEScores.jsx
