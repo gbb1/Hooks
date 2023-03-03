@@ -32,6 +32,9 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true,
     // [port] what port on our local machine to run the dev server
     // port: 8089,
   },
