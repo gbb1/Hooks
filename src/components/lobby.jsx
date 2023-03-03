@@ -16,6 +16,7 @@ import { AiFillCheckCircle, AiOutlineEllipsis } from 'react-icons/ai';
 
 // IMPORT SOCKET CONTEXT
 import { SocketContext } from '../index.jsx';
+import Logo from './elements/logo.jsx';
 
 export default function Lobby() {
   // USE SOCKET CONTEXT
@@ -34,6 +35,7 @@ export default function Lobby() {
   const [start, setStart] = useState(false);
   const [ready, setReady] = useState(false);
   const [admin, setAdmin] = useState('');
+  const [loading, isLoading] = useState(true);
 
   useEffect(() => {
     membersRef.current = members;
@@ -54,6 +56,7 @@ export default function Lobby() {
 
     socket.on('set-admin', (user) => {
       setAdmin(user);
+      isLoading(false);
     });
 
     socket.on('timer-update', (newTime) => {
@@ -129,6 +132,10 @@ export default function Lobby() {
     socket.emit('get-books');
   }
 
+  if (loading) {
+    return <div />;
+  }
+
   return (
     <div className="lobby-parent">
       <div className="title-accent">Invite code:</div>
@@ -187,4 +194,3 @@ export default function Lobby() {
     </div>
   );
 }
-

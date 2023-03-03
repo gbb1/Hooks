@@ -14,6 +14,8 @@ body, html {
 
 @media screen and (max-width: 767px) {
 
+
+
   .lobby-parent {
     display: flex;
     flex-flow: column nowrap;
@@ -141,11 +143,23 @@ body, html {
 
 }
 
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .lobby-parent {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   margin-top: 10vh;
+  animation-name: fadein;
+  animation-duration: 2s;
+  animation-iteration-count: once;
 }
 
 .lobby-name {
