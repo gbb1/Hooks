@@ -169,76 +169,6 @@ function startTimer(s, lobby, start, vote = 0) {
   return killer;
 }
 
-// STORE ACTIVE LOBBIES IN A SET THAT WE CAN REFERENCE LATER
-
-/*
-  round:
-    1: ?
-      socket_id:
-        answer: 'Example sentence answer'
-        wager: 'votes_writer' || 'laughs' || 'none'
-        writer: 3
-        laughs: 2
-        writer_vote: true || false
-        missed_points: 0
-
-  function typePoints(type, play) {
-    if (type === 'writer') {
-      return play['writer'] * 2;
-    } else {
-      return play['laughs'];
-    }
-  }
-
-  function calcPoints(id) {
-
-    let play = round[id];
-    let score = 0;
-
-    const missed = {
-      'writer': 'laughs'
-      'laughs' : 'writer'
-    }
-
-    if (wager !== 'none') {
-      score += play[wager] * 2
-      play.missed_points = typePoints(missed[wager], play);
-    } else {
-      score += 2 * play.votes_writer + play.laughs
-    }
-    if (play.writer_vote) {
-      score += 2;
-    }
-    return score; // add score to DB?
-  }
-
-  // response
-  function updateHistory(lobby, data) {
-    if (lobbyDetails[lobby].history === undefined) {
-      lobbyDetails[lobby].history = new Set();
-      lobbyDetails[lobby].history.add(data.id);
-    } else {
-      lobbyDetails[lobby].history.add(data.id);
-    }
-  }
-
-*/
-
-// function startNewRound(lobby) {
-//   getBook(lobby)
-//     .then((book) => {
-//       console.log('book:::', book);
-//       requests.getGptAnswer(book.title)
-//         .then((answer) => {
-//           console.log('asnwerr:', answer);
-//           Lobbies.findOneAndUpdate(
-//             { lobby_id: lobby },
-//             { gpt: answer },
-//             { new: true },
-//           )
-
-// }
-
 function getNewBook(lobby) {
   console.log('CALLING GET NEW BOOK');
   getBook(lobby)
@@ -339,8 +269,8 @@ io.on('connection', (socket) => {
       })
       .then(() => getAdmin(data.lobby))
       .then((results) => {
-        // console.log('ADMIN RESULTS', results);
-        io.to(data.lobby).emit('set-admin', results.username);
+        console.log('ADMIN RESULTS', results);
+        io.to(data.lobby).emit('set-admin', results);
       })
       .catch((err) => {
         console.log(err);

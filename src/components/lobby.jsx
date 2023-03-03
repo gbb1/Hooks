@@ -34,7 +34,7 @@ export default function Lobby() {
   const [voteTime, setVoteTime] = useState(30);
   const [start, setStart] = useState(false);
   const [ready, setReady] = useState(false);
-  const [admin, setAdmin] = useState('');
+  const [admin, setAdmin] = useState(null);
   const [loading, isLoading] = useState(true);
 
   useEffect(() => {
@@ -145,7 +145,7 @@ export default function Lobby() {
           Host:
         </div>
         <div className="subheader-content">
-          {admin}
+          {admin.username}
         </div>
       </div>
       <div className="members-parent">
@@ -171,18 +171,24 @@ export default function Lobby() {
           ))
         }
       </div>
-      <div className="lobby-forms">
-        <div className="label-parent">
-          <div className="label">Round time: </div>
-          <div className="label-sub">(sec)</div>
-        </div>
-        <input className="input" id="round-timer" autoComplete="off" type="number" placeholder="60 - 300 sec" onChange={(e) => setter(e)} />
-        <div className="label-parent">
-          <div className="label">Voting time: </div>
-          <div className="label-sub">(sec)</div>
-        </div>
-        <input className="input" id="voting-timer" autoComplete="off" type="number" placeholder="30 - 120 sec" onChange={(e) => setter(e)} />
-      </div>
+      {
+        admin.socket_id === socket.id
+          ? (
+            <div className="lobby-forms">
+              <div className="label-parent">
+                <div className="label">Round time: </div>
+                <div className="label-sub">(sec)</div>
+              </div>
+              <input className="input" id="round-timer" autoComplete="off" type="number" placeholder="60 - 300 sec" onChange={(e) => setter(e)} />
+              <div className="label-parent">
+                <div className="label">Voting time: </div>
+                <div className="label-sub">(sec)</div>
+              </div>
+              <input className="input" id="voting-timer" autoComplete="off" type="number" placeholder="30 - 120 sec" onChange={(e) => setter(e)} />
+            </div>
+          )
+          : null
+      }
       <div className="buttons">
         {
           ready
