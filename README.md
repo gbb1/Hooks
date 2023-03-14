@@ -23,7 +23,7 @@ Share your lobby code with friends, decide how long each round will last, and th
 <div align="center"><img src="http://g.recordit.co/Ux0r8Cq6gc.gif" width=100% align="center"/></div>
 
 ### Write and publish your sentence:
-Try to come up with a sentence that others will think is the real one!
+Hooks will show a random book and its author. Try to come up with a sentence that others will think is the real one!
 <div align="center"><img src="http://g.recordit.co/2FeZi8MgUP.gif" width=40% align="center"/></div>
 
 ### Vote on your favorite answers:
