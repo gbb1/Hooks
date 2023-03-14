@@ -1,10 +1,3 @@
-/* eslint-disable object-shorthand */
-/* eslint-disable camelcase */
-/* eslint-disable no-shadow */
-/* eslint-disable no-console */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
@@ -50,20 +43,9 @@ const lobby = new mongoose.Schema({
   gpt: String,
 });
 
-// const booksUrl = new mongoose.Schema({
-//   id: { type: String, required: true },
-//   title: { type: String, required: true },
-//   author: { type: String, required: true },
-//   sentence: { type: String, required: true },
-//   url: String,
-//   summary: String,
-// });
-
 const Lobbies = mongoose.model('Lobbies', lobby);
 const Books = mongoose.model('Books', books);
-// const Book = mongoose.model('book', book);
 const Member = mongoose.model('Member', member);
-// const BooksUrl = mongoose.model('BooksUrl', booksUrl);
 
 /* --------------------------------------------------------------------- */
 
@@ -81,50 +63,10 @@ const closeDB = () => {
   mongoose.connection.close();
 };
 
-// connectDB();
-// addLobby('0000')
-//   .then((out) => {
-//     console.log(out);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-// addMember('0000', '1', 'testo')
-//   .then((out) => {
-//     console.log(out);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-// removeMember('SvOvy3XmKrFIsCAYAAAD')
-//   .then((out) => {
-//     console.log(out);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-// checkLobby('0000')
-//   .then((out) => {
-//     console.log(out);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-// getBook('0000')
-//   .then((out) => {
-//     console.log('out:', out);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
-// saveLobby('1234');
-
 module.exports = {
   connectDB,
   closeDB,
   Lobbies,
   Books,
   Member,
-  // BooksUrl,
 };

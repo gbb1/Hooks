@@ -1,9 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/extensions */
-/* eslint-disable new-cap */
 import React, {
   useState, useEffect, useRef, createContext, useContext,
 } from 'react';
@@ -49,8 +43,6 @@ export default function Start() {
     return () => {
       socket.off();
     };
-    // const nameField = document.getElementById('name');
-    // nameField.value = socket.id.substring(0, 7).toUpperCase();
   }, []);
 
   function handleInput(event) {
@@ -82,11 +74,6 @@ export default function Start() {
           </div>
           <div className="start-title">hooks</div>
         </div>
-        {/* <h1 className="socket-id">Socket id:</h1>
-        <h3>{socket.id}</h3> */}
-        {/* <h1>
-          Lobby id:
-        </h1> */}
         <div>
           {
             hasLobby

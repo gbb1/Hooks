@@ -47,29 +47,24 @@ body, html {
 
   .innerPromptDiv {
     min-height: 200px;
-    // width: fit-content;
     min-width: 150px;
     max-width: max(40vw, 300px);
     display: flex;
     flex-flow: column nowrap;
-    // border: solid blue;
     align-items: center;
     margin-left: 30px;
     margin-right: 30px;
-    // display: inline-block;
   }
 
   .book-title {
     font-size: 1.5em;
     width: 100%;
-    // margin-left: 20px;
     align-self: start;
     font-weight: bold;
   }
 
   .author {
     margin-top: 10px;
-    // margin-left: 20px;
     align-self: start;
     font-weight: 300;
     width: 80%;
@@ -80,12 +75,10 @@ body, html {
     margin-bottom: 40px;
     font-size: 1.2em;
     justify-self: center;
-    // margin-left: -px;
   }
 
   .input-container {
     width: 80%;
-    // border: solid blue;
   }
 
   .game-input {
@@ -97,7 +90,6 @@ body, html {
     max-height: 200px;
     min-height: 200px;
     font-size: 14px;
-    // max-height: 25vh;
     overflow: hidden;
     resize: none;
 
@@ -111,7 +103,6 @@ body, html {
   .logo-game {
     scale: .4;
     margin: 0;
-    // height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -190,29 +181,24 @@ body, html {
 
 .innerPromptDiv {
   min-height: 200px;
-  // width: fit-content;
   min-width: 150px;
   max-width: max(40vw, 300px);
   display: flex;
   flex-flow: column nowrap;
-  // border: solid blue;
   align-items: center;
   margin-left: 30px;
   margin-right: 30px;
-  // display: inline-block;
 }
 
 .book-title {
   font-size: 1.5em;
   width: 100%;
-  // margin-left: 20px;
   align-self: start;
   font-weight: bold;
 }
 
 .author {
   margin-top: 10px;
-  // margin-left: 20px;
   align-self: start;
   font-weight: 300;
   width: 80%;
@@ -223,12 +209,10 @@ body, html {
   margin-bottom: 40px;
   font-size: 1.2em;
   justify-self: center;
-  // margin-left: -px;
 }
 
 .input-container {
   width: 80%;
-  // border: solid blue;
 }
 
 .game-input {
@@ -240,7 +224,6 @@ body, html {
   max-height: 200px;
   min-heigh: 200px;
   font-size: 14px;
-  // max-height: 25vh;
   overflow: hidden;
   resize: none;
 
@@ -248,13 +231,11 @@ body, html {
 
 .game-input::first-letter {
   font-size: 1.5em;
-  // color: blue;
 }
 
 .logo-game {
   scale: .4;
   margin: 0;
-  // height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;

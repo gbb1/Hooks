@@ -1,7 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable import/extensions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 const mongoose = require('mongoose');
 const {
   Books, connectDB, closeDB, Lobbies, Member, setAnswer, setPrefs,

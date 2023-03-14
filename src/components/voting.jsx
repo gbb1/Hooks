@@ -1,15 +1,3 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-param-reassign */
-/* eslint-disable arrow-body-style */
-/* eslint-disable camelcase */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-cycle */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/extensions */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
@@ -42,9 +30,7 @@ export default function Voting() {
 
   function shuffleAnswers(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
-      // Choose a random index from the unshuffled portion of the array
       const j = Math.floor(Math.random() * (i + 1));
-      // Swap the current element with the randomly chosen element
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;

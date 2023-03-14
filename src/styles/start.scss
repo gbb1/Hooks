@@ -66,12 +66,10 @@ body, html {
     position: absolute;
     align-items: center;
     top: 10%;
-    // border: solid red;
   }
 
   .logo-div1 {
     scale: .7;
-    // border: solid green;
     display: flex;
     justify-content: center;
     margin: 0;
@@ -118,7 +116,6 @@ body, html {
     align-self: center;
     margin-top: 0;
     transform: translate(0,-50%);
-    // border: solid red;
   }
 
   .spacer {
@@ -151,14 +148,12 @@ body, html {
   }
 
   .forms-div {
-    // border: none;
     margin-top: 10px;
     margin-bottom: 10px;
     width: 30vw;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
-    // border: solid orange;
     width: fit-content;
   }
 
@@ -213,12 +208,10 @@ body, html {
   position: absolute;
   align-items: center;
   top: 10%;
-  // border: solid red;
 }
 
 .logo-div1 {
   scale: .7;
-  // border: solid green;
   display: flex;
   justify-content: center;
   margin: 0;
@@ -265,7 +258,6 @@ body, html {
   align-self: center;
   margin-top: 0;
   transform: translate(0,-50%);
-  // border: solid red;
 }
 
 .spacer {
@@ -298,21 +290,18 @@ body, html {
 }
 
 .forms-div {
-  // border: none;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 30vw;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  // border: solid orange;
   width: fit-content;
 }
 
 .input-start {
   outline: none;
   border: none;
-  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 0 7px 2px rgba(0, 0, 0, 0.05);
   border-radius: 6px;
   padding: 10px;

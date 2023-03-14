@@ -1,15 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable import/extensions */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-undef */
-/* eslint-disable no-sequences */
-/* eslint-disable no-dupe-keys */
-/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const {
   Books, connectDB, closeDB, Lobbies, Member, setAnswer, setPrefs,
@@ -21,14 +9,12 @@ function getBook(lobbyId, randId) {
 
   return Books.find({ id: randId.toString() })
     .then((result) => {
-      // console.log(result);
       book = result[0];
       return Lobbies.find({ lobby_id: lobbyId, 'history._id': result[0]._id });
     })
     .then((find) => {
       console.log('find', find);
       if (find.length === 0) {
-        // console.log('BOOK', book);
         return Lobbies.findOneAndUpdate(
           { lobby_id: lobbyId },
           {
@@ -42,9 +28,6 @@ function getBook(lobbyId, randId) {
           },
         );
       }
-      // else {
-      //   getBook(lobbyId);
-      // }
     })
     .then(() => book)
     .catch((err) => {
@@ -70,7 +53,6 @@ function addLobby(lobbyId) {
     { lobby_id: lobbyId },
     { upsert: true },
   )
-    // .then(() => getBook(lobbyId))
     .catch((err) => {
       console.log(err);
     });
@@ -93,7 +75,6 @@ function addMember(lobbyId, socket, nickname) {
     newMember.save()
       .then((member) => Member.find({ lobby_id: lobbyId }).sort({ date: 1 })
         .then((results) =>
-          // console.log("POTENTIAL ADMIN", results);
           Lobbies.findOneAndUpdate(
             { lobby_id: lobbyId },
             {
@@ -114,7 +95,6 @@ function addMember(lobbyId, socket, nickname) {
 function removeMember(socket) {
   return Member.findOneAndDelete({ socket_id: socket })
     .then((record) => {
-      // console.log('RECORD::', record);
       if (record !== null) {
         return Lobbies.findOneAndUpdate(
           { lobby_id: record.lobby_id },
@@ -125,16 +105,11 @@ function removeMember(socket) {
       return null;
     })
     .then((lob) => {
-      // console.log(lob);
       const newAdmin = '';
       if (lob.members.length === 0) {
         return Lobbies.findOneAndDelete({ lobby_id: lob.lobby_id })
           .then((result) => (result));
       }
-      // updateAdmin(lob)
-      //   .then((result) => {
-      //     console.log('UPDATED ADMIN', result);
-      //   });
       return null;
     })
     .catch((err) => console.log(err));
@@ -150,7 +125,6 @@ function updateAdmin(lobby) {
       { new: true },
     ))
     .then((result) =>
-      // console.log(result);
       result)
     .catch((err) => {
       console.log(err);
@@ -161,7 +135,6 @@ function checkAdmin(lobby, socket) {
   return Lobbies.find({ lobby_id: lobby })
     .then((results) => Member.findById(results[0].admin))
     .then((admin) =>
-      // console.log('NEW', admin, admin.socket_id);
       admin.socket_id === socket)
     .catch((err) => console.log(err));
 }

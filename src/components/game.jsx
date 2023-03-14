@@ -1,11 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-cycle */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/extensions */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
@@ -61,8 +53,6 @@ export default function Game() {
   }
 
   useEffect(() => {
-    // setTimer(round_time);
-    // socket.emit('game-start', lobbyId);
     socket.emit('start-timer-round', lobbyId);
 
     function handleKey(event) {
@@ -93,7 +83,6 @@ export default function Game() {
     });
 
     socket.on('timer-killer', (func) => {
-      // console.log('FUNCTION', func);
       setKiller(func.function);
     });
 
@@ -127,9 +116,6 @@ export default function Game() {
       <div className="input-container">
         <textarea id="game-text" className="game-input" placeholder="Once upon a time..." onChange={(e) => handleSentence(e)} />
       </div>
-      {/* <div>Wager?</div> */}
-      {/* <button id="writer" type="button" onClick={(e) => handleWager(e)}>Writer</button>
-      <button id="laughs" type="button" onClick={(e) => handleWager(e)}>Laughs</button> */}
       {
         published
           ? <div className="waiting">Waiting...</div>

@@ -1,7 +1,3 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const axios = require('axios');
@@ -10,7 +6,6 @@ const OpenAI = require('openai-api');
 const openai = new OpenAI(process.env.GPT_AUTH_SECRET);
 
 function getBooks(count) {
-  // console.log('starting request');
   axios.get('https://www.googleapis.com/books/v1/volumes', {
     headers: {
       Authorization: process.env.AUTH_SECRET,
@@ -26,10 +21,7 @@ function getBooks(count) {
 }
 
 function gptAnswer(title, author) {
-  // console.log('starting request');
   const prompt = `The first sentence of the novel "${title}" is`;
-
-  // console.log(prompt);
 
   const params = {
     engine: 'davinci',
@@ -45,8 +37,7 @@ function gptAnswer(title, author) {
     )
       .then((response) => {
         const answer = response.data;
-        // console.log('answer: ', answer.choices[0].text.split('"')[1]);
-        return answer.choices[0].text.split('"')[1]; // filter((a) => (a.text.length > 10 && a.text[0] === '"'))[0].text.trim()) //[0].text.split('.')[0] + '.'
+        return answer.choices[0].text.split('"')[1];
       })
       .catch((err) => {
         console.log(err);
@@ -76,18 +67,15 @@ function getGptAnswer(title, author) {
 
           let i = 0;
           while (sentence === undefined && i < answer.choices.length) {
-            // console.log('here');
             sentence = answer.choices[i].text.split('"')[1];
             i++;
           }
           if (sentence.length === 0) {
             sentence = 'GPT was stumped on this one...';
           }
-          // console.log('SENTENCE', sentence);
           resolve(sentence);
         })
         .catch((err) => {
-          // console.log(err);
           reject(err);
         });
     })();

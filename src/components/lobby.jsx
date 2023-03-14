@@ -1,10 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-cycle */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/extensions */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
@@ -67,7 +60,6 @@ export default function Lobby() {
     socket.on('player-ready', (ms) => {
       console.log('player ready', ms);
       setMembers(ms);
-      // setReady(true); // DELETE THIS;
       if (ms.length > 1) {
         const readies = ms.every((m) => m.ready);
         console.log(readies);
@@ -103,11 +95,6 @@ export default function Lobby() {
     } else {
       setRoundTime(event.target.value);
     }
-    // const setters = {
-    //   'round-timer': setRoundTime,
-    //   'voting-timer': setVoteTime,
-    // };
-    // setters[event.target.id](event.target.value);
   }
 
   // READY CURRENT PLAYER
@@ -118,7 +105,6 @@ export default function Lobby() {
 
   // START GAME
   function startGame() {
-    // console.log('starting');
     const gameInfo = {
       roundTime,
       voteTime,
@@ -193,10 +179,9 @@ export default function Lobby() {
         {
           ready
             ? <button className="button" type="button" onClick={startGame}>Start</button>
-            : <button className="button" type="button" onClick={getReady}>Ready</button> // CHANGE THIS !!!!!!!!!!!!!! back to getReady
+            : <button className="button" type="button" onClick={getReady}>Ready</button>
         }
       </div>
-      {/* <button type="button" onClick={getBooks}>Books</button> */}
     </div>
   );
 }

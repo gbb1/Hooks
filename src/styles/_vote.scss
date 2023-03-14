@@ -16,7 +16,6 @@ body, html {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    // margin-top: 5vh;
   }
 
   .header-parent {
@@ -80,7 +79,6 @@ body, html {
     display: flex;
     flex-flow: column nowrap;
     max-width: min(300px, 76vw);
-    // border: solid blue;
     overflow-x: visible;
   }
 
@@ -119,12 +117,10 @@ body, html {
     }
 
     .selected-laugh {
-      // box-shadow: 0 0 10px 0px rgba(255, 140, 0, 0.15);
       box-shadow: inset 0 0 15px 2px rgba(255, 140, 0, 0.1);
     }
 
     .selected-writer {
-      // box-shadow: 0 0 10px 0px rgba(0, 51, 255, 0.15);
       box-shadow: inset 0 0 15px 2px rgba(0, 51, 255, 0.1);
     }
 
@@ -136,11 +132,9 @@ body, html {
       margin-top: 8px;
       align-items: flex-end;
       justify-self: end;
-      // border: solid red;
       width: fit-content;
       align-self: end;
       justify-content: center;
-      // justify-self: end;
 
       .vote-button {
         margin-left: 5px;
@@ -150,27 +144,19 @@ body, html {
         line-height: 20px;
         height: 28px;
         height: 25px;
-        // border: solid blue;
         background-color: rgba(0, 0, 0, .25);
-        // display: flex;
-        // flex-flow: row;
-        // padding: 10px;
       }
 
       .writer {
-        // height: 25px;
         padding-top: 1px;
         padding-bottom: 1px;
-        // display: flex;
         height: 25px;
 
       }
 
       .button-logo {
         height: fit-content;
-        // border: solid blue;
         text-align: center;
-        // transform: translate(0,-100%);
         scale: .3;
         position: relative;
       }
@@ -210,7 +196,6 @@ body, html {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  // margin-top: 5vh;
 }
 
 .header-parent {
@@ -274,7 +259,6 @@ body, html {
   display: flex;
   flex-flow: column nowrap;
   max-width: min(300px, 76vw);
-  // border: solid blue;
   overflow-x: visible;
 }
 
@@ -313,12 +297,10 @@ body, html {
   }
 
   .selected-laugh {
-    // box-shadow: 0 0 10px 0px rgba(255, 140, 0, 0.15);
     box-shadow: inset 0 0 15px 2px rgba(255, 140, 0, 0.1);
   }
 
   .selected-writer {
-    // box-shadow: 0 0 10px 0px rgba(0, 51, 255, 0.15);
     box-shadow: inset 0 0 15px 2px rgba(0, 51, 255, 0.1);
   }
 
@@ -330,11 +312,9 @@ body, html {
     margin-top: 8px;
     align-items: flex-end;
     justify-self: end;
-    // border: solid red;
     width: fit-content;
     align-self: end;
     justify-content: center;
-    // justify-self: end;
 
     .vote-button {
       margin-left: 5px;
@@ -344,27 +324,19 @@ body, html {
       line-height: 20px;
       height: 28px;
       height: 25px;
-      // border: solid blue;
       background-color: rgba(0, 0, 0, 0);
-      // display: flex;
-      // flex-flow: row;
-      // padding: 10px;
     }
 
     .writer {
-      // height: 25px;
       padding-top: 1px;
       padding-bottom: 1px;
-      // display: flex;
       height: 25px;
 
     }
 
     .button-logo {
       height: fit-content;
-      // border: solid blue;
       text-align: center;
-      // transform: translate(0,-100%);
       scale: .3;
       position: relative;
     }

@@ -1,8 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 const mongoose = require('mongoose');
 const {
   Books, connectDB, closeDB, Lobbies, Member, Answers,
@@ -21,7 +16,6 @@ function setAnswer(socket, submit) {
     { new: true },
   )
     .then((ans) => {
-      // console.log('LOOK HERE', ans);
       Member.findOneAndUpdate(
         { socket_id: socket },
         {
@@ -56,10 +50,6 @@ function checkDone(lobby) {
       console.log(err);
     });
 }
-
-// connectDB();
-
-// setAnswer()
 
 module.exports = {
   setAnswer,

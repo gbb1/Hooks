@@ -1,10 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-cycle */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/extensions */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
@@ -31,19 +24,15 @@ export default function Scores() {
     socket.emit('get-scores', lobbyId);
 
     socket.on('scores', (answers) => {
-      // console.log('getting scores', answers);
       const r1 = answers.slice(0);
       const writer = r1.sort((a, b) => Number(b.writer_votes) - Number(a.writer_votes));
-      // console.log('WRITER', writer);
       const r2 = answers.slice(0);
       const laughs = r2.sort((a, b) => Number(b.laugh_votes) - Number(a.laugh_votes));
-      // console.log('LAUGHS', laughs);
       const correct1 = answers.filter((a) => a.socket === 'author');
       const gpt1 = answers.filter((a) => a.socket === 'gpt');
 
       const funny = laughs[0];
-      // console.log('RANKED', ranked);
-      // console.log('FUNNY', funny);
+
       setScores(writer);
       setCorrect(correct1[0]);
       setGpt(gpt1[0]);
@@ -62,7 +51,6 @@ export default function Scores() {
   }, []);
 
   useEffect(() => {
-    // console.log(correct, gpt);
     if (correct !== null && gpt !== null) {
       setLoading(false);
     }
